@@ -1692,9 +1692,12 @@ module.exports = {
 /*!******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CrearCanalComponent.vue?vue&type=script&lang=js& ***!
   \******************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue_sweetalert2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-sweetalert2 */ "./node_modules/vue-sweetalert2/dist/index.js");
 //
 //
 //
@@ -1765,49 +1768,66 @@ module.exports = {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+Vue.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_0__["default"]);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      nombre_canal: '',
+      tamaño_player: 0,
+      imagen_canal: '',
+      fondo_canal: ''
+    };
+  },
+  methods: {
+    registrarCanal: function registrarCanal(data) {
+      var esto = this;
+      axios.post("/canales/registrar", {
+        imagen_canal: esto.imagen_canal,
+        nombre_canal: esto.nombre_canal,
+        tamaño_player: esto.tamaño_player,
+        fondo_canal: esto.fondo_canal
+      }).then(function (response) {
+        Vue.swal({
+          toast: true,
+          type: 'success',
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 2000,
+          title: 'Ingresado Exitosamente'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    subirLogo: function subirLogo(e) {
+      var esto = this;
+      var file = e.target.files[0];
+      console.log(file);
+      var reader = new FileReader();
+
+      reader.onloadend = function (file) {
+        //console.log('RESULT', reader.result)
+        esto.imagen_canal = reader.result;
+      };
+
+      reader.readAsDataURL(file);
+    },
+    subirFondo: function subirFondo(e) {
+      var esto = this;
+      var file = e.target.files[0];
+      console.log(file);
+      var reader = new FileReader();
+
+      reader.onloadend = function (file) {
+        //console.log('RESULT', reader.result)
+        esto.fondo_canal = reader.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+});
 
 /***/ }),
 
@@ -2954,7 +2974,6 @@ Vue.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_0__["default"]);
       axios.get("/canales_ok").then(function (response) {
         console.log(response);
         _this.arrayCanales = response.data.canales;
-        debugger;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -55914,7 +55933,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Sortable", function() { return Sortable; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Swap", function() { return SwapPlugin; });
 /**!
- * Sortable 1.10.0
+ * Sortable 1.10.1
  * @author	RubaXa   <trash@rubaxa.org>
  * @author	owenm    <owen23355@gmail.com>
  * @license MIT
@@ -56041,12 +56060,14 @@ function _nonIterableSpread() {
   throw new TypeError("Invalid attempt to spread non-iterable instance");
 }
 
-var version = "1.10.0";
+var version = "1.10.1";
 
 function userAgent(pattern) {
-  return !!
-  /*@__PURE__*/
-  navigator.userAgent.match(pattern);
+  if (typeof window !== 'undefined' && window.navigator) {
+    return !!
+    /*@__PURE__*/
+    navigator.userAgent.match(pattern);
+  }
 }
 
 var IE11OrLess = userAgent(/(?:Trident.*rv[ :]?11\.|msie|iemobile|Windows Phone)/i);
@@ -56881,10 +56902,6 @@ function _dispatchEvent(info) {
   }, info));
 }
 
-if (typeof window === "undefined" || !window.document) {
-  throw new Error("Sortable.js requires a window with a document");
-}
-
 var dragEl,
     parentEl,
     ghostEl,
@@ -56922,12 +56939,14 @@ _silent = false,
     savedInputChecked = [];
 /** @const */
 
-var PositionGhostAbsolutely = IOS,
+var documentExists = typeof document !== 'undefined',
+    PositionGhostAbsolutely = IOS,
     CSSFloatProperty = Edge || IE11OrLess ? 'cssFloat' : 'float',
     // This will not pass for IE9, because IE9 DnD only works on anchors
-supportDraggable = !ChromeForAndroid && !IOS && 'draggable' in document.createElement('div'),
+supportDraggable = documentExists && !ChromeForAndroid && !IOS && 'draggable' in document.createElement('div'),
     supportCssPointerEvents = function () {
-  // false when <= IE11
+  if (!documentExists) return; // false when <= IE11
+
   if (IE11OrLess) {
     return false;
   }
@@ -57041,15 +57060,17 @@ _detectNearestEmptySortable = function _detectNearestEmptySortable(x, y) {
 }; // #1184 fix - Prevent click event on fallback if dragged but item not changed position
 
 
-document.addEventListener('click', function (evt) {
-  if (ignoreNextClick) {
-    evt.preventDefault();
-    evt.stopPropagation && evt.stopPropagation();
-    evt.stopImmediatePropagation && evt.stopImmediatePropagation();
-    ignoreNextClick = false;
-    return false;
-  }
-}, true);
+if (documentExists) {
+  document.addEventListener('click', function (evt) {
+    if (ignoreNextClick) {
+      evt.preventDefault();
+      evt.stopPropagation && evt.stopPropagation();
+      evt.stopImmediatePropagation && evt.stopImmediatePropagation();
+      ignoreNextClick = false;
+      return false;
+    }
+  }, true);
+}
 
 var nearestEmptyInsertDetectEvent = function nearestEmptyInsertDetectEvent(evt) {
   if (dragEl) {
@@ -58509,11 +58530,14 @@ function _cancelNextTick(id) {
 } // Fixed #973:
 
 
-on(document, 'touchmove', function (evt) {
-  if ((Sortable.active || awaitingDragStarted) && evt.cancelable) {
-    evt.preventDefault();
-  }
-}); // Export utils
+if (documentExists) {
+  on(document, 'touchmove', function (evt) {
+    if ((Sortable.active || awaitingDragStarted) && evt.cancelable) {
+      evt.preventDefault();
+    }
+  });
+} // Export utils
+
 
 Sortable.utils = {
   on: on,
@@ -58815,6 +58839,7 @@ var drop = function drop(_ref) {
       dispatchSortableEvent = _ref.dispatchSortableEvent,
       hideGhostForTarget = _ref.hideGhostForTarget,
       unhideGhostForTarget = _ref.unhideGhostForTarget;
+  if (!originalEvent) return;
   var toSortable = putSortable || activeSortable;
   hideGhostForTarget();
   var touch = originalEvent.changedTouches && originalEvent.changedTouches.length ? originalEvent.changedTouches[0] : originalEvent;
@@ -63932,47 +63957,49 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-lg-6" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("h4", { staticClass: "mt-0 header-title" }, [
-              _vm._v("Crear Canal")
-            ]),
-            _vm._v(" "),
-            _c("p", { staticClass: "text-muted m-b-30 " }, [
-              _vm._v(
-                "Parsley is a javascript form validation\n                    library. It helps you provide your users with feedback on their form\n                    submission before sending it to your server."
-              )
-            ]),
-            _vm._v(" "),
-            _c("form", { attrs: { action: "#" } }, [
+  return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "col-lg-12" }, [
+      _c("div", { staticClass: "card" }, [
+        _c("div", { staticClass: "card-body" }, [
+          _c("h4", { staticClass: "mt-0 header-title" }, [
+            _vm._v("Crear Canal")
+          ]),
+          _vm._v(" "),
+          _c("p", { staticClass: "text-muted m-b-30 " }, [
+            _vm._v(
+              "Parsley is a javascript form validation\n                    library. It helps you provide your users with feedback on their form\n                    submission before sending it to your server."
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-6" }, [
               _c("div", { staticClass: "form-group" }, [
                 _c("label", [_vm._v("Nombre del Canal")]),
                 _vm._v(" "),
                 _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.nombre_canal,
+                      expression: "nombre_canal"
+                    }
+                  ],
                   staticClass: "form-control",
                   attrs: {
                     type: "text",
                     required: "",
                     placeholder: "Ingresar nombre del canal"
+                  },
+                  domProps: { value: _vm.nombre_canal },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.nombre_canal = $event.target.value
+                    }
                   }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group" }, [
-                _c("label", [_vm._v("Subir Logo del Player")]),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "filestyle",
-                  attrs: { type: "file", "data-buttonname": "btn-secondary" }
                 })
               ]),
               _vm._v(" "),
@@ -63981,35 +64008,61 @@ var staticRenderFns = [
                   _vm._v("Selección tamaño de player")
                 ]),
                 _vm._v(" "),
-                _c("select", { staticClass: "form-control select2" }, [
-                  _c("option", [_vm._v("Seleccionar")]),
-                  _vm._v(" "),
-                  _c("optgroup", { attrs: { label: "Selección en pixeles" } }, [
-                    _c("option", { attrs: { value: "AK" } }, [
-                      _vm._v("512 x 288")
-                    ]),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.tamaño_player,
+                        expression: "tamaño_player"
+                      }
+                    ],
+                    staticClass: "form-control select2",
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.tamaño_player = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c("option", [_vm._v("Seleccionar")]),
                     _vm._v(" "),
-                    _c("option", { attrs: { value: "HI" } }, [
-                      _vm._v("640 x 360")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "HI" } }, [
-                      _vm._v("768 x 432")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "HI" } }, [
-                      _vm._v("960 x 540")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "HI" } }, [
-                      _vm._v("1280 x 720")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "HI" } }, [
-                      _vm._v("1920 x 1080")
-                    ])
-                  ])
-                ])
+                    _vm._m(0)
+                  ]
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-4" }, [
+              _c("div", { staticClass: "form-group" }, [
+                _c("label", [_vm._v("Subir Logo del Player")]),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "filestyle",
+                  attrs: { type: "file", "data-buttonname": "btn-secondary" },
+                  on: { change: _vm.subirLogo }
+                }),
+                _vm._v(" "),
+                _c("img", {
+                  staticClass: "img-responsive",
+                  attrs: {
+                    src: _vm.imagen_canal,
+                    width: "100px",
+                    height: "100px"
+                  }
+                })
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "form-group" }, [
@@ -64017,154 +64070,78 @@ var staticRenderFns = [
                 _vm._v(" "),
                 _c("input", {
                   staticClass: "filestyle",
-                  attrs: { type: "file", "data-buttonname": "btn-secondary" }
+                  attrs: { type: "file", "data-buttonname": "btn-secondary" },
+                  on: { change: _vm.subirFondo }
+                }),
+                _vm._v(" "),
+                _c("img", {
+                  staticClass: "img-responsive",
+                  attrs: {
+                    src: _vm.fondo_canal,
+                    width: "100px",
+                    height: "100px"
+                  }
                 })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group" }, [
-                _c("div", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary waves-effect waves-light",
-                      attrs: { type: "submit" }
-                    },
-                    [
-                      _vm._v(
-                        "\n                                Crear\n                            "
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-secondary waves-effect m-l-5",
-                      attrs: { type: "reset" }
-                    },
-                    [
-                      _vm._v(
-                        "\n                                Cancelar\n                            "
-                      )
-                    ]
-                  )
-                ])
               ])
             ])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-lg-6" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("h4", { staticClass: "mt-0 header-title" }, [
-              _vm._v("Datos del canal creado")
-            ]),
-            _vm._v(" "),
-            _c("small", [_vm._v("Nombre del canal")]),
-            _vm._v(" "),
-            _c("h4", [_vm._v("Cachipum")]),
-            _vm._v(" "),
-            _c("small", [_vm._v("Tamaño player")]),
-            _vm._v(" "),
-            _c("h4", [_vm._v("1280 X 720 px")]),
-            _vm._v(" "),
-            _c("iframe", {
-              attrs: {
-                width: "100%",
-                height: "315",
-                src: "https://www.youtube.com/embed/E7oxiG4dNVM",
-                frameborder: "0",
-                allow:
-                  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
-                allowfullscreen: ""
-              }
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("Código Iframe")]),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("div", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary waves-effect waves-light",
+                  attrs: { type: "submit" },
+                  on: {
+                    click: function($event) {
+                      return _vm.registrarCanal()
+                    }
+                  }
+                },
+                [
+                  _vm._v(
+                    "\n                                Crear\n                            "
+                  )
+                ]
+              ),
               _vm._v(" "),
-              _c("div", [
-                _c("textarea", {
-                  staticClass: "form-control",
-                  attrs: { required: "", rows: "3" }
-                })
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [_vm._v("URL Emisión")]),
-              _vm._v(" "),
-              _c("div", { staticClass: "bootstrap-filestyle input-group" }, [
-                _c("input", {
-                  staticClass: "form-control ",
-                  attrs: { type: "text", placeholder: "", disabled: "" }
-                }),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    staticClass: "group-span-filestyle input-group-append",
-                    attrs: { tabindex: "0" }
-                  },
-                  [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "btn btn-success ",
-                        attrs: { for: "filestyle-1" }
-                      },
-                      [
-                        _c("span", { staticClass: "buttonText" }, [
-                          _vm._v("Copiar")
-                        ])
-                      ]
-                    )
-                  ]
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", [
-                _vm._v(
-                  "Nombre o clave de la emisión (pega lo siguiente en el codificador)"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "bootstrap-filestyle input-group" }, [
-                _c("input", {
-                  staticClass: "form-control ",
-                  attrs: { type: "text", placeholder: "", disabled: "" }
-                }),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    staticClass: "group-span-filestyle input-group-append",
-                    attrs: { tabindex: "0" }
-                  },
-                  [
-                    _c(
-                      "label",
-                      {
-                        staticClass: "btn btn-success ",
-                        attrs: { for: "filestyle-1" }
-                      },
-                      [
-                        _c("span", { staticClass: "buttonText" }, [
-                          _vm._v("Copiar")
-                        ])
-                      ]
-                    )
-                  ]
-                )
-              ])
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-secondary waves-effect m-l-5",
+                  attrs: { type: "reset" }
+                },
+                [
+                  _vm._v(
+                    "\n                                Cancelar\n                            "
+                  )
+                ]
+              )
             ])
           ])
         ])
       ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("optgroup", { attrs: { label: "Selección en pixeles" } }, [
+      _c("option", { attrs: { value: "1" } }, [_vm._v("512 x 288")]),
+      _vm._v(" "),
+      _c("option", { attrs: { value: "2" } }, [_vm._v("640 x 360")]),
+      _vm._v(" "),
+      _c("option", { attrs: { value: "3" } }, [_vm._v("768 x 432")]),
+      _vm._v(" "),
+      _c("option", { attrs: { value: "4" } }, [_vm._v("960 x 540")]),
+      _vm._v(" "),
+      _c("option", { attrs: { value: "5" } }, [_vm._v("1280 x 720")]),
+      _vm._v(" "),
+      _c("option", { attrs: { value: "6" } }, [_vm._v("1920 x 1080")])
     ])
   }
 ]
@@ -83845,10 +83822,15 @@ function _nonIterableSpread() {
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
 }
+// EXTERNAL MODULE: external {"commonjs":"sortablejs","commonjs2":"sortablejs","amd":"sortablejs","root":"Sortable"}
+var external_commonjs_sortablejs_commonjs2_sortablejs_amd_sortablejs_root_Sortable_ = __webpack_require__("a352");
+var external_commonjs_sortablejs_commonjs2_sortablejs_amd_sortablejs_root_Sortable_default = /*#__PURE__*/__webpack_require__.n(external_commonjs_sortablejs_commonjs2_sortablejs_amd_sortablejs_root_Sortable_);
+
 // EXTERNAL MODULE: ./src/util/helper.js
 var helper = __webpack_require__("c649");
 
 // CONCATENATED MODULE: ./src/vuedraggable.js
+
 
 
 
@@ -84103,10 +84085,7 @@ var draggableComponent = {
     });
 
     !("draggable" in options) && (options.draggable = ">*");
-
-    var Sortable = __webpack_require__("a352").default;
-
-    this._sortable = new Sortable(this.rootContainer, options);
+    this._sortable = new external_commonjs_sortablejs_commonjs2_sortablejs_amd_sortablejs_root_Sortable_default.a(this.rootContainer, options);
     this.computeIndexes();
   },
   beforeDestroy: function beforeDestroy() {
@@ -84614,15 +84593,14 @@ if (token) {
 /*!*********************************************************!*\
   !*** ./resources/js/components/CrearCanalComponent.vue ***!
   \*********************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CrearCanalComponent_vue_vue_type_template_id_1bf0d50e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CrearCanalComponent.vue?vue&type=template&id=1bf0d50e& */ "./resources/js/components/CrearCanalComponent.vue?vue&type=template&id=1bf0d50e&");
 /* harmony import */ var _CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CrearCanalComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/CrearCanalComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -84652,15 +84630,13 @@ component.options.__file = "resources/js/components/CrearCanalComponent.vue"
 /*!**********************************************************************************!*\
   !*** ./resources/js/components/CrearCanalComponent.vue?vue&type=script&lang=js& ***!
   \**********************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CrearCanalComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CrearCanalComponent.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default.a); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearCanalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -85224,8 +85200,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/harove/Dropbox/grupoz/playlistCrud/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/harove/Dropbox/grupoz/playlistCrud/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/harove/Dropbox/grupoz/directorCloud1/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/harove/Dropbox/grupoz/directorCloud1/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -59,7 +59,7 @@ export default {
                 .then( (response) => {
                     console.log(response);
                     this.arrayCanales = response.data.canales;
-                    debugger
+                    
                 })
                 .catch(function(error) {
                     console.log(error);

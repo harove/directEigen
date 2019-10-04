@@ -15,5 +15,7 @@ class Canal extends Model
         return $this->hasMany('App\Playlist');
     }
 
+    public $timestamps = false;
+
 
 }

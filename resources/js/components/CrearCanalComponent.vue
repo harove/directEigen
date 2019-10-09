@@ -35,18 +35,18 @@
                                             
                                                             <div class="form-group">
                                                                     <label>Logo Player <i>(Formatos .jpg .png )</i></label>
-                                                                    <input type="file" @change="subirLogo" class="filestyle short" data-buttonname="btn-secondary">
+                                                                    <input type="file" :src="logo" @change="subirLogo" class="filestyle short" data-buttonname="btn-secondary">
 
                                                             </div>
 
                                                             <div class="form-group">
                                                                 <label>Posición de Logo</label><br>
                                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                                    <input type="radio" onclick="changePosition('top-left')" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+                                                                    <input type="radio" @click="changePositionVue('top-left')" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
                                                                     <label class="custom-control-label" for="customRadioInline1">Toggle this custom radio</label>
                                                                 </div>
                                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                                    <input type="radio" onclick="changePosition('top-right')" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+                                                                    <input type="radio" @click="changePositionVue('top-right')" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
                                                                     <label class="custom-control-label" for="customRadioInline2">Or toggle this other custom radio</label>
                                                                 </div>
                                                             </div>
@@ -86,10 +86,14 @@
 
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
+require( 'jwplayer-node' );
+
+
 
 export default {
      data() {
         return {
+            logo: '',
             nombre_canal: '',
             tamaño_player: 0,
             imagen_canal: '',
@@ -97,6 +101,8 @@ export default {
         }
     },
     methods: {
+
+       
         registrarCanal(data) {
             let esto = this;
             axios.post("/canales/registrar", {
@@ -132,7 +138,7 @@ export default {
                     
                     //console.log('RESULT', reader.result)
 
-                    esto.imagen_canal = reader.result;
+                    this.logo = reader.result;
                 }
                 reader.readAsDataURL(file);
             },
@@ -152,6 +158,25 @@ export default {
                 }
                 reader.readAsDataURL(file);
             },
+
+             changePositionVue(position) {
+                    
+                    jwplayer("gzplayer").setup({
+                        file: "/uploads/1x02.mp4",
+                        logo: {
+                            file: this.logo,
+                            position: position,
+                            hide: "true",
+                            autostart: true,
+                        }
+                    })
+                    .load();
+                
+                },
+
+
+
+
     }
 
 }

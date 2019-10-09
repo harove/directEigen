@@ -38,19 +38,19 @@
 
             <script type="text/JavaScript">
 
-                function changePosition(position) {
+                // function changePosition(position) {
                     
-                    jwplayer("gzplayer").setup({
-                        file: "/uploads/1x02.mp4",
-                        logo: {
-                            file: '/uploads/canal/logo/3zcLu22YJoi0Nkpm.jpg',
-                            position: position,
-                            hide: "true",
-                            autostart: true,
-                        }
-                    })
-                    .load();
-                }
+                //     jwplayer("gzplayer").setup({
+                //         file: "/uploads/1x02.mp4",
+                //         logo: {
+                //             file: '/uploads/canal/logo/3zcLu22YJoi0Nkpm.jpg',
+                //             position: position,
+                //             hide: "true",
+                //             autostart: true,
+                //         }
+                //     })
+                //     .load();
+                // }
                 
             </script>
 

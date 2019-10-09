@@ -1768,6 +1768,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 Vue.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_0__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -63957,167 +63970,99 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "col-lg-12" }, [
-      _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-body" }, [
-          _c("h4", { staticClass: "mt-0 header-title" }, [
-            _vm._v("Crear Canal")
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "text-muted m-b-30 " }, [
-            _vm._v(
-              "Parsley is a javascript form validation\n                    library. It helps you provide your users with feedback on their form\n                    submission before sending it to your server."
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-6" }, [
-              _c("div", { staticClass: "form-group" }, [
-                _c("label", [_vm._v("Nombre del Canal")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.nombre_canal,
-                      expression: "nombre_canal"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: {
-                    type: "text",
-                    required: "",
-                    placeholder: "Ingresar nombre del canal"
-                  },
-                  domProps: { value: _vm.nombre_canal },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.nombre_canal = $event.target.value
-                    }
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group" }, [
-                _c("label", { staticClass: "control-label" }, [
-                  _vm._v("Selección tamaño de player")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
+  return _c("div", { staticClass: "page-title-box" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-lg-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("h4", { staticClass: "mt-0 header-title" }, [
+              _vm._v("Crear Canal")
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "text-muted m-b-30 " }, [
+              _vm._v(
+                "Parsley is a javascript form validation\n                        library. It helps you provide your users with feedback on their form\n                        submission before sending it to your server."
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-6" }, [
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", [_vm._v("Nombre del Canal")]),
+                  _vm._v(" "),
+                  _c("input", {
                     directives: [
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.tamaño_player,
-                        expression: "tamaño_player"
+                        value: _vm.nombre_canal,
+                        expression: "nombre_canal"
                       }
                     ],
-                    staticClass: "form-control select2",
+                    staticClass: "form-control",
+                    attrs: {
+                      type: "text",
+                      required: "",
+                      placeholder: "Ingresar nombre del canal"
+                    },
+                    domProps: { value: _vm.nombre_canal },
                     on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.tamaño_player = $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.nombre_canal = $event.target.value
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c("input", {
+                    staticClass: "filestyle short",
+                    attrs: { type: "file", "data-buttonname": "btn-secondary" },
+                    on: { change: _vm.subirLogo }
+                  })
+                ]),
+                _vm._v(" "),
+                _vm._m(2),
+                _vm._v(" "),
+                _vm._m(3)
+              ]),
+              _vm._v(" "),
+              _vm._m(4)
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("div", [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary waves-effect waves-light",
+                    attrs: { type: "submit" },
+                    on: {
+                      click: function($event) {
+                        return _vm.registrarCanal()
                       }
                     }
                   },
                   [
-                    _c("option", [_vm._v("Seleccionar")]),
-                    _vm._v(" "),
-                    _vm._m(0)
+                    _vm._v(
+                      "\n                                    Crear\n                                "
+                    )
                   ]
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-4" }, [
-              _c("div", { staticClass: "form-group" }, [
-                _c("label", [_vm._v("Subir Logo del Player")]),
+                ),
                 _vm._v(" "),
-                _c("input", {
-                  staticClass: "filestyle",
-                  attrs: { type: "file", "data-buttonname": "btn-secondary" },
-                  on: { change: _vm.subirLogo }
-                }),
-                _vm._v(" "),
-                _c("img", {
-                  staticClass: "img-responsive",
-                  attrs: {
-                    src: _vm.imagen_canal,
-                    width: "100px",
-                    height: "100px"
-                  }
-                })
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "form-group" }, [
-                _c("label", [_vm._v("Subir fondo del Player")]),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "filestyle",
-                  attrs: { type: "file", "data-buttonname": "btn-secondary" },
-                  on: { change: _vm.subirFondo }
-                }),
-                _vm._v(" "),
-                _c("img", {
-                  staticClass: "img-responsive",
-                  attrs: {
-                    src: _vm.fondo_canal,
-                    width: "100px",
-                    height: "100px"
-                  }
-                })
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "form-group" }, [
-            _c("div", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary waves-effect waves-light",
-                  attrs: { type: "submit" },
-                  on: {
-                    click: function($event) {
-                      return _vm.registrarCanal()
-                    }
-                  }
-                },
-                [
+                _c("button", [
                   _vm._v(
-                    "\n                                Crear\n                            "
+                    "\n                                    Cancelar\n                                "
                   )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-secondary waves-effect m-l-5",
-                  attrs: { type: "reset" }
-                },
-                [
-                  _vm._v(
-                    "\n                                Cancelar\n                            "
-                  )
-                ]
-              )
+                ])
+              ])
             ])
           ])
         ])
@@ -64130,18 +64075,124 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("optgroup", { attrs: { label: "Selección en pixeles" } }, [
-      _c("option", { attrs: { value: "1" } }, [_vm._v("512 x 288")]),
+    return _c("div", { staticClass: "row align-items-center" }, [
+      _c("div", { staticClass: "col-sm-6" }, [
+        _c("h4", { staticClass: "page-title" }, [_vm._v("Crear Canal")]),
+        _vm._v(" "),
+        _c("ol", { staticClass: "breadcrumb" }, [
+          _c("li", { staticClass: "breadcrumb-item" }, [
+            _c("a", { attrs: { href: "javascript:void(0);" } }, [
+              _vm._v("Dashboard")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "breadcrumb-item" }, [
+            _c("a", { attrs: { href: "javascript:void(0);" } }, [
+              _vm._v("Canales")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "breadcrumb-item active" }, [
+            _vm._v("Crear Canal")
+          ])
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", [
+      _vm._v("Logo Player "),
+      _c("i", [_vm._v("(Formatos .jpg .png )")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("label", [_vm._v("Posición de Logo")]),
+      _c("br"),
       _vm._v(" "),
-      _c("option", { attrs: { value: "2" } }, [_vm._v("640 x 360")]),
+      _c(
+        "div",
+        { staticClass: "custom-control custom-radio custom-control-inline" },
+        [
+          _c("input", {
+            staticClass: "custom-control-input",
+            attrs: {
+              type: "radio",
+              onclick: "changePosition('top-left')",
+              id: "customRadioInline1",
+              name: "customRadioInline1"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "label",
+            {
+              staticClass: "custom-control-label",
+              attrs: { for: "customRadioInline1" }
+            },
+            [_vm._v("Toggle this custom radio")]
+          )
+        ]
+      ),
       _vm._v(" "),
-      _c("option", { attrs: { value: "3" } }, [_vm._v("768 x 432")]),
+      _c(
+        "div",
+        { staticClass: "custom-control custom-radio custom-control-inline" },
+        [
+          _c("input", {
+            staticClass: "custom-control-input",
+            attrs: {
+              type: "radio",
+              onclick: "changePosition('top-right')",
+              id: "customRadioInline2",
+              name: "customRadioInline1"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "label",
+            {
+              staticClass: "custom-control-label",
+              attrs: { for: "customRadioInline2" }
+            },
+            [_vm._v("Or toggle this other custom radio")]
+          )
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("label", [
+        _vm._v("Logo Link "),
+        _c("i", [_vm._v("(Formatos .jpg .png )")])
+      ]),
       _vm._v(" "),
-      _c("option", { attrs: { value: "4" } }, [_vm._v("960 x 540")]),
-      _vm._v(" "),
-      _c("option", { attrs: { value: "5" } }, [_vm._v("1280 x 720")]),
-      _vm._v(" "),
-      _c("option", { attrs: { value: "6" } }, [_vm._v("1920 x 1080")])
+      _c("input", {
+        staticClass: "form-control",
+        attrs: {
+          type: "url",
+          value: "https://ejemplo.cl",
+          id: "example-url-input"
+        }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-6" }, [
+      _c("div", { attrs: { id: "gzplayer" } })
     ])
   }
 ]

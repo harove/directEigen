@@ -1,18 +1,4 @@
 <template>
-                                 
-                    <div class="page-title-box">
-                        <div class="row align-items-center">
-                           <div class="col-sm-6">
-                                <h4 class="page-title">Crear Canal</h4>
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Canales</a></li>
-                                    <li class="breadcrumb-item active">Crear Canal</li>
-                                </ol>
-                            </div>
-                            
-                            </div>
-                        
     
                         <div class="row">
                             <div class="col-lg-12">
@@ -32,32 +18,36 @@
                                                                 <input type="text" v-model="nombre_canal" class="form-control" required placeholder="Ingresar nombre del canal"/>
                                                             </div>
 
-                                            
                                                             <div class="form-group">
-                                                                    <label>Logo Player <i>(Formatos .jpg .png )</i></label>
-                                                                    <input type="file" @change="subirLogo" class="filestyle short" data-buttonname="btn-secondary">
-
+                                                                <label class="control-label">Selección tamaño de player</label>
+                                                                <select class="form-control select2" v-model="tamaño_player">
+                                                                    <option>Seleccionar</option>
+                                                                    <optgroup label="Selección en pixeles">
+                                                                        <option value="1">512 x 288</option>
+                                                                        <option value="2">640 x 360</option>
+                                                                        <option value="3">768 x 432</option>
+                                                                        <option value="4">960 x 540</option>
+                                                                        <option value="5">1280 x 720</option>
+                                                                        <option value="6">1920 x 1080</option>
+                                                                    </optgroup>
+                                                                </select>
                                                             </div>
 
-                                                            <div class="form-group">
-                                                                <label>Posición de Logo</label><br>
-                                                                <div class="custom-control custom-radio custom-control-inline">
-                                                                    <input type="radio" onclick="changePosition('top-left')" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
-                                                                    <label class="custom-control-label" for="customRadioInline1">Toggle this custom radio</label>
-                                                                </div>
-                                                                <div class="custom-control custom-radio custom-control-inline">
-                                                                    <input type="radio" onclick="changePosition('top-right')" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
-                                                                    <label class="custom-control-label" for="customRadioInline2">Or toggle this other custom radio</label>
-                                                                </div>
-                                                            </div>
-                                                             <div class="form-group">
-                                                                <label>Logo Link <i>(Formatos .jpg .png )</i></label>
-                                                                <input class="form-control" type="url" value="https://ejemplo.cl" id="example-url-input">
-                                                            </div>
+
                                                         </div>
                                             
-                                                        <div class="col-md-6">
-                                                            <div id="gzplayer"></div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                    <label>Subir Logo del Player</label>
+                                                                    <input type="file" @change="subirLogo" class="filestyle" data-buttonname="btn-secondary">
+                                                                    <img :src="imagen_canal" class="img-responsive" width="100px" height="100px"> 
+                                                            </div>
+                                                            <div class="form-group">
+                                                                    <label>Subir fondo del Player</label>
+                                                                    <input type="file" @change="subirFondo"  class="filestyle" data-buttonname="btn-secondary">
+                                                                    <img :src="fondo_canal" class="img-responsive" width="100px" height="100px"> 
+                                                            </div>
+                                                            
                                                         </div>
                                             </div>
 
@@ -66,7 +56,7 @@
                                                     <button type="submit" @click="registrarCanal()" class="btn btn-primary waves-effect waves-light">
                                                         Crear
                                                     </button>
-                                                    <button >
+                                                    <button type="reset" class="btn btn-secondary waves-effect m-l-5">
                                                         Cancelar
                                                     </button>
                                                 </div>
@@ -76,14 +66,9 @@
                                     </div>
                                 </div>
                             </div> <!-- end col -->                            
-                        </div> <!-- end row --> 
-                    </div>
+                        </div> <!-- end row -->     
 </template>
-
-
 <script>
-
-
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 

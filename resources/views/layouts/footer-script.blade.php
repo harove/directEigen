@@ -1,11 +1,11 @@
 <!-- App's Basic Js  -->
 
 <script src="{{ URL::asset('assets/js/jquery.min.js') }}"></script>
-
 <script src="{{ URL::asset('assets/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ URL::asset('assets/js/metisMenu.min.js') }}"></script>
 <script src="{{ URL::asset('assets/js/jquery.slimscroll.js') }}"></script>
 <script src="{{ URL::asset('assets/js/waves.min.js') }}"></script>
+<script src="https://cdn.jwplayer.com/libraries/ZXzPs1Xc.js"></script>
 
  @yield('script')
 

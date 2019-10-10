@@ -92,7 +92,17 @@
                                         Subir Vídeo
                                     </a>
                             </div>
+                            <div class="dropdown pt-3 d-inline-block">
+                                <a class="btn btn-light" href="#" role="button"  aria-expanded="false">
+                                    <time datetime="<%= DateTime.UtcNow.ToString("u") %>" data-format="hh:mm:ss A"></time>
+                                    </a>
+                            </div>
+
+
                         </li>
+
+      
+
                     </ul>
 
                 </nav>

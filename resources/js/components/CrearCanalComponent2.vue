@@ -1,72 +1,70 @@
 <template>
     
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card">
-                                    <div class="card-body">
-        
-                                        <h4 class="mt-0 header-title">Crear Canal</h4>
-                                        <p class="text-muted m-b-30 ">Parsley is a javascript form validation
-                                            library. It helps you provide your users with feedback on their form
-                                            submission before sending it to your server.</p>
-        
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
 
-                                                <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label>Nombre del Canal</label>
-                                                                <input type="text" v-model="nombre_canal" class="form-control" required placeholder="Ingresar nombre del canal"/>
-                                                            </div>
+                    <h4 class="mt-0 header-title">Crear Canal</h4>
+                    <p class="text-muted m-b-30 ">Parsley is a javascript form validation
+                        library. It helps you provide your users with feedback on their form
+                        submission before sending it to your server.</p>
+                            <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Nombre del Canal</label>
+                                            <input type="text" v-model="nombre_canal" class="form-control" required placeholder="Ingresar nombre del canal"/>
+                                        </div>
 
-                                                            <div class="form-group">
-                                                                <label class="control-label">Selección tamaño de player</label>
-                                                                <select class="form-control select2" v-model="tamaño_player">
-                                                                    <option>Seleccionar</option>
-                                                                    <optgroup label="Selección en pixeles">
-                                                                        <option value="1">512 x 288</option>
-                                                                        <option value="2">640 x 360</option>
-                                                                        <option value="3">768 x 432</option>
-                                                                        <option value="4">960 x 540</option>
-                                                                        <option value="5">1280 x 720</option>
-                                                                        <option value="6">1920 x 1080</option>
-                                                                    </optgroup>
-                                                                </select>
-                                                            </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Selección tamaño de player</label>
+                                            <select class="form-control select2" v-model="tamaño_player">
+                                                <option>Seleccionar</option>
+                                                <optgroup label="Selección en pixeles">
+                                                    <option value="1">512 x 288</option>
+                                                    <option value="2">640 x 360</option>
+                                                    <option value="3">768 x 432</option>
+                                                    <option value="4">960 x 540</option>
+                                                    <option value="5">1280 x 720</option>
+                                                    <option value="6">1920 x 1080</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
 
 
-                                                        </div>
-                                            
-                                                        <div class="col-md-4">
-                                                            <div class="form-group">
-                                                                    <label>Subir Logo del Player</label>
-                                                                    <input type="file" @change="subirLogo" class="filestyle" data-buttonname="btn-secondary">
-                                                                    <img :src="imagen_canal" class="img-responsive" width="100px" height="100px"> 
-                                                            </div>
-                                                            <div class="form-group">
-                                                                    <label>Subir fondo del Player</label>
-                                                                    <input type="file" @change="subirFondo"  class="filestyle" data-buttonname="btn-secondary">
-                                                                    <img :src="fondo_canal" class="img-responsive" width="100px" height="100px"> 
-                                                            </div>
-                                                            
-                                                        </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <div>
-                                                    <button type="submit" @click="registrarCanal()" class="btn btn-primary waves-effect waves-light">
-                                                        Crear
-                                                    </button>
-                                                    <button type="reset" class="btn btn-secondary waves-effect m-l-5">
-                                                        Cancelar
-                                                    </button>
-                                                </div>
-                                            </div>
-                                     
-        
                                     </div>
-                                </div>
-                            </div> <!-- end col -->                            
-                        </div> <!-- end row -->     
+                        
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                                <label>Subir Logo del Player</label>
+                                                <input type="file" @change="subirLogo" class="filestyle" data-buttonname="btn-secondary">
+                                                <img :src="imagen_canal" class="img-responsive" width="100px" height="100px"> 
+                                        </div>
+                                        <div class="form-group">
+                                                <label>Subir fondo del Player</label>
+                                                <input type="file" @change="subirFondo"  class="filestyle" data-buttonname="btn-secondary">
+                                                <img :src="fondo_canal" class="img-responsive" width="100px" height="100px"> 
+                                        </div>
+                                        
+                                    </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div>
+                                <button type="submit" @click="registrarCanal()" class="btn btn-primary waves-effect waves-light">
+                                    Crear
+                                </button>
+                                <button type="reset" class="btn btn-secondary waves-effect m-l-5">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+                    
+
+                </div>
+            </div>
+        </div> <!-- end col -->                            
+    </div> <!-- end row -->     
 </template>
 <script>
 import VueSweetalert2 from 'vue-sweetalert2';

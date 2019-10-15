@@ -1781,6 +1781,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 Vue.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
@@ -2874,7 +2875,7 @@ __webpack_require__.r(__webpack_exports__);
         // bytes
         retryChunks: true,
         retryChunksLimit: 3,
-        maxFilesize: 100,
+        maxFilesize: 40000,
         // megabytes    
         acceptedFiles: ".mp4",
         addRemoveLinks: true,

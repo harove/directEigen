@@ -56,12 +56,14 @@ class VideoController extends Controller
     public function uploadFiles(Request $request){
     
         //return 'uploadFiles';
-
-        if ($request->input('dzuuid')!=null) {
+        dump($_REQUEST);
+        dump($_FILES);
+        
+       // if ($request->input('dzuuid')!=null) {
 
             //$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
             //dump(isset($_REQUEST["dzuuid"]));
-            dump($_REQUEST);
+        
             //dump($_FILES["file"]);
             // dump(Input::file('file')->guessClientExtension());
             // dump(Input::file('file')->getClientOriginalName());
@@ -87,9 +89,12 @@ class VideoController extends Controller
             $chunks = isset($_REQUEST["dztotalchunkcount"]) ? intval($_REQUEST["dztotalchunkcount"]) : 0;
             $size =  isset($_REQUEST["dztotalfilesize"]) ? intval($_REQUEST["dztotalfilesize"]) : 0;  
 
-
+            $ds= DIRECTORY_SEPARATOR;
             $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : $_FILES["file2"]["name"];
-            $filePath = "uploads/$fileName";
+            $filePath = $ds."Volumes/www/shared-wow/$fileName";
+
+            $handler1 = opendir("\\\\10.255.255.35\\www");
+            dump($handler1);
 
             $out = @fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
             if ($out) {
@@ -118,8 +123,7 @@ class VideoController extends Controller
             }
 
 
-            if ( $chunk == $chunks-1) 
-            {
+            if (( $chunk == $chunks-1) || ( $chunk == 0)) {
 
             // exec('mediainfo --Inform="General;%Duration%" ' . $filePath, $output);  
             // $durationInSec = ceil(ceil($output[0])/1000);      
@@ -238,7 +242,7 @@ class VideoController extends Controller
                 
         
 
-            }  // check is chunk
+           // }  // check is chunk
 
 
     

@@ -88,7 +88,7 @@
                 chunkSize: 1000000, // bytes
                 retryChunks: true,
                 retryChunksLimit: 3,
-                maxFilesize: 100, // megabytes    
+                maxFilesize: 40000, // megabytes    
                 acceptedFiles: ".mp4",
                 addRemoveLinks: true,
                 timeout: 5000,

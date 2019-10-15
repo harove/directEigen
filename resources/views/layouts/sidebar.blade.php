@@ -57,5 +57,5 @@
                 </div>
                 <!-- Sidebar -left -->
 
-            </div>
-            <!-- Left Sidebar End -->
+</div>
+<!-- Left Sidebar End -->

@@ -50,6 +50,7 @@
                                                                     <label class="custom-control-label" for="customRadioInline2">Or toggle this other custom radio</label>
                                                                 </div>
                                                             </div>
+                                                            
                                                              <div class="form-group">
                                                                 <label>Logo Link <i>(Formatos .jpg .png )</i></label>
                                                                 <input class="form-control" type="url" value="https://ejemplo.cl" id="example-url-input">

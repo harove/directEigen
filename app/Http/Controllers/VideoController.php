@@ -91,10 +91,24 @@ class VideoController extends Controller
 
             $ds= DIRECTORY_SEPARATOR;
             $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : $_FILES["file2"]["name"];
-            $filePath = $ds."Volumes/www/shared-wow/$fileName";
+            
+      
 
-            $handler1 = opendir("\\\\10.255.255.35\\www");
-            dump($handler1);
+            if (is_dir("Volumes/www/shared-wow/"))
+              $directory = "Volumes/www/shared-wow/";
+            else {
+              $directory = "uploads";
+            };
+
+            //$filePath = $directory.$ds.$fileName;
+            //$filePath = "uploads/$fileName"; //works ok
+
+            //$filePath = "uploads/".$fileName;   //works ok
+            $filePath = $directory.$ds.$fileName;
+            dump($filePath);
+
+            // $handler1 = opendir("\\\\10.255.255.35\\www");
+            // dump($handler1);
 
             $out = @fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
             if ($out) {

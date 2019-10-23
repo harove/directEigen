@@ -1782,6 +1782,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 Vue.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
@@ -1790,7 +1805,7 @@ __webpack_require__(/*! jwplayer-node */ "./node_modules/jwplayer-node/index.js"
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      logo: '',
+      logofile: '',
       nombre_canal: '',
       tamaño_player: 0,
       imagen_canal: '',
@@ -1799,7 +1814,6 @@ __webpack_require__(/*! jwplayer-node */ "./node_modules/jwplayer-node/index.js"
   },
   methods: {
     registrarCanal: function registrarCanal(data) {
-      var esto = this;
       axios.post("/canales/registrar", {
         imagen_canal: esto.imagen_canal,
         nombre_canal: esto.nombre_canal,
@@ -1821,22 +1835,19 @@ __webpack_require__(/*! jwplayer-node */ "./node_modules/jwplayer-node/index.js"
     subirLogo: function subirLogo(e) {
       var _this = this;
 
-      var esto = this;
-      var file = e.target.files[0];
-      console.log(file);
+      var file = e.target.files[0]; //files[0] object   first file
+
       var reader = new FileReader();
-
-      reader.onloadend = function (file) {
-        //console.log('RESULT', reader.result)
-        _this.logo = reader.result;
-      };
-
       reader.readAsDataURL(file);
+
+      reader.onload = function (event) {
+        _this.logofile = reader.result;
+      };
     },
     subirFondo: function subirFondo(e) {
       var esto = this;
-      var file = e.target.files[0];
-      console.log(file);
+      var file = e.target.files[0]; //file object
+
       var reader = new FileReader();
 
       reader.onloadend = function (file) {
@@ -1848,12 +1859,12 @@ __webpack_require__(/*! jwplayer-node */ "./node_modules/jwplayer-node/index.js"
     },
     changePositionVue: function changePositionVue(position) {
       jwplayer("gzplayer").setup({
-        file: "/uploads/1x02.mp4",
+        file: "/uploads/video_1_2M.mp4",
         logo: {
-          file: this.logo,
-          position: position,
-          hide: "true",
-          autostart: true
+          file: this.logofile,
+          position: position //hide: "true",
+          //autostart: true,
+
         }
       }).load();
     }
@@ -75177,13 +75188,30 @@ var render = function() {
                   _vm._m(1),
                   _vm._v(" "),
                   _c("input", {
-                    staticClass: "filestyle short",
+                    staticClass: "filestyle",
+                    staticStyle: {
+                      position: "absolute",
+                      clip: "rect(0px, 0px, 0px, 0px)"
+                    },
                     attrs: {
                       type: "file",
-                      src: _vm.logo,
-                      "data-buttonname": "btn-secondary"
+                      "data-buttonname": "btn-secondary",
+                      id: "filestyle-0",
+                      tabindex: "-1"
                     },
                     on: { change: _vm.subirLogo }
+                  }),
+                  _vm._v(" "),
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _c("img", {
+                    staticClass: "img-thumbnail",
+                    attrs: {
+                      alt: "150x150",
+                      width: "150",
+                      src: _vm.logofile,
+                      "data-holder-rendered": "true"
+                    }
                   })
                 ]),
                 _vm._v(" "),
@@ -75256,10 +75284,10 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(3)
               ]),
               _vm._v(" "),
-              _vm._m(3)
+              _vm._m(4)
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
@@ -75331,6 +75359,41 @@ var staticRenderFns = [
     return _c("label", [
       _vm._v("Logo Player "),
       _c("i", [_vm._v("(Formatos .jpg .png )")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "bootstrap-filestyle input-group" }, [
+      _c("input", {
+        staticClass: "form-control ",
+        attrs: { type: "text", placeholder: "", disabled: "" }
+      }),
+      _vm._v(" "),
+      _c(
+        "span",
+        {
+          staticClass: "group-span-filestyle input-group-append",
+          attrs: { tabindex: "0" }
+        },
+        [
+          _c(
+            "label",
+            {
+              staticClass: "btn btn-secondary ",
+              attrs: { for: "filestyle-0" }
+            },
+            [
+              _c("span", {
+                staticClass: "icon-span-filestyle fas fa-folder-open"
+              }),
+              _vm._v(" "),
+              _c("span", { staticClass: "buttonText" }, [_vm._v("Choose file")])
+            ]
+          )
+        ]
+      )
     ])
   },
   function() {

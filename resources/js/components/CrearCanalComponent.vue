@@ -1,5 +1,4 @@
-<template>
-                                 
+<template>                   
                     <div class="page-title-box">
                         <div class="row align-items-center">
                            <div class="col-sm-6">
@@ -13,7 +12,6 @@
                             
                             </div>
                         
-    
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="card">
@@ -35,7 +33,24 @@
                                             
                                                             <div class="form-group">
                                                                     <label>Logo Player <i>(Formatos .jpg .png )</i></label>
-                                                                    <input type="file" :src="logo" @change="subirLogo" class="filestyle short" data-buttonname="btn-secondary">
+                                                            
+                                                                    <input type="file" class="filestyle" @change="subirLogo" data-buttonname="btn-secondary" id="filestyle-0" tabindex="-1" style="position: absolute; clip: rect(0px, 0px, 0px, 0px);">
+
+                                                                    <div class="bootstrap-filestyle input-group">
+                                                                        <input type="text" class="form-control " placeholder="" disabled=""> 
+                                                                        <span class="group-span-filestyle input-group-append" tabindex="0">
+                                                                            <label for="filestyle-0" class="btn btn-secondary ">
+                                                                                <span class="icon-span-filestyle fas fa-folder-open"></span> 
+                                                                                <span class="buttonText">Choose file</span>
+                                                                            </label>
+                                                                        </span>
+                                                                    </div>
+
+                                                                    <img class="img-thumbnail" alt="150x150" width="150" :src="logofile" data-holder-rendered="true">
+
+
+
+
 
                                                             </div>
 
@@ -94,7 +109,7 @@ require( 'jwplayer-node' );
 export default {
      data() {
         return {
-            logo: '',
+            logofile: '',
             nombre_canal: '',
             tamaño_player: 0,
             imagen_canal: '',
@@ -105,7 +120,6 @@ export default {
 
        
         registrarCanal(data) {
-            let esto = this;
             axios.post("/canales/registrar", {
                 imagen_canal    : esto.imagen_canal,
                 nombre_canal    : esto.nombre_canal,
@@ -126,30 +140,20 @@ export default {
                 console.log(error);
             });
         },
-        subirLogo(e){
-                
-                let esto=this;
-                let file = e.target.files[0];
-             
-                console.log(file);
-
-                let reader = new FileReader();
-
-                reader.onloadend = (file) => {
-                    
-                    //console.log('RESULT', reader.result)
-
-                    this.logo = reader.result;
-                }
+        subirLogo(e){      
+                let file = e.target.files[0];   //files[0] object   first file
+                let reader = new FileReader();   
                 reader.readAsDataURL(file);
-            },
+                reader.onload = event => {
+                    this.logofile = reader.result;
+                } 
+        },
+
             subirFondo(e){
                 
                 let esto=this;
-                let file = e.target.files[0];
+                let file = e.target.files[0];    //file object
              
-                console.log(file);
-
                 let reader = new FileReader();
                 reader.onloadend = (file) => {
                     
@@ -163,12 +167,12 @@ export default {
              changePositionVue(position) {
                     
                     jwplayer("gzplayer").setup({
-                        file: "/uploads/1x02.mp4",
+                        file: "/uploads/video_1_2M.mp4",
                         logo: {
-                            file: this.logo,
+                            file: this.logofile,
                             position: position,
-                            hide: "true",
-                            autostart: true,
+                            //hide: "true",
+                            //autostart: true,
                         }
                     })
                     .load();

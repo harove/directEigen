@@ -20,8 +20,14 @@ class VideoController extends Controller
 
     public function listarVideo( Request $request){
         
-        $videos = Video::all();
-        return ['videos' => $videos];
+        dump($request);
+        //$videos = Video::all();
+        $videos = DB::table('video')->join('categoria_video','video.id_categoria','=','categoria_video.id')->select('categoria_video.nombre_categoria','categoria_video.id','video.*')->get();
+      return ['videos' => $videos];
+
+
+        dump($videos);
+        // return ['videos' => $videos];
     }
 
     public function store(Request $request){

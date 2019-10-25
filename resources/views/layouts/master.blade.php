@@ -31,7 +31,9 @@
         </div>
     </div>
     
+           
             @include('layouts.footer')  
+            <script src="../../js/app.js"></script>
             @include('layouts.footer-script')  
         
             <script src="{{ URL::asset('plugins/jquery-steps/jquery.steps.min.js') }}"></script>

@@ -27,7 +27,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Nombre del Canal</label>
-                                                                <input type="text" v-model="nombre_canal" class="form-control" required placeholder="Ingresar nombre del canal"/>
+                                                                <input type="text" :input="nombrarCanal" class="form-control" required placeholder="Ingresar nombre del canal"/>
                                                             </div>
 
                                             
@@ -85,6 +85,10 @@
                                                     <button >
                                                         Cancelar
                                                     </button>
+                                                    <button @click = "counter += 1">
+                                                        Add 1
+                                                    </button>
+                                                    <p>The button above has been clicked {{ counter }} times.</p>
                                                 </div>
                                             </div>
                                      
@@ -113,18 +117,25 @@ export default {
             nombre_canal: '',
             tamaño_player: 0,
             imagen_canal: '',
-            fondo_canal: ''
+            fondo_canal: '',
+            counter: 0
+
         }
     },
     methods: {
 
+        nombrarCanal(e)
+        {
+            console.log(e);
+            this.nombre_canal = e.target.value;
+        },
        
         registrarCanal(data) {
             axios.post("/canales/registrar", {
-                imagen_canal    : esto.imagen_canal,
-                nombre_canal    : esto.nombre_canal,
-                tamaño_player   : esto.tamaño_player,
-                fondo_canal     : esto.fondo_canal
+                imagen_canal    : this.imagen_canal,
+                nombre_canal    : this.nombre_canal,
+                tamaño_player   : this.tamaño_player,
+                fondo_canal     : this.fondo_canal
             })
             .then(function(response) {
                 Vue.swal({

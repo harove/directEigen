@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class PlaylistController extends Controller
 {
+
+    public function dc(){
+        
+        return view('layouts.master');
+      
+    }
+
+
+
     public function index( Request $request){
         
         $playlist = DB::table('playlist')->join('canales', 'playlist.id_canal', '=','canales.id')

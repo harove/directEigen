@@ -1,105 +1,180 @@
 <template>
+
+<div class="page-title-box">
+    <div class="row align-items-center">
+        <div class="col-sm-7 bread">
+            <h4 class="page-title">Crear Playlist</h4>
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
+              <li class="breadcrumb-item active">Crear Playlist</li>
+            </ol>
+          </div>
+        </div>
+
   <div class="row">
-    <div class="col-lg-4">
 
-    
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    
+ <div class="col-lg-8">
+                <form class action="#">
+                  <div class="form-group row">
+                    <label for="example-text-input" class="col-sm-4 col-form-label">Nombre</label>
+                    <div class="col-8">
+       
+                      <input class="form-control" type="text" v-model="nombre_playlist" placeholder="Lista de Reproducción" id="example-text-input"/>
+            
+           
+                    </div>
+                  </div>
 
-      <div class="card">
-        <div class="card-body">
-          <form class action="#">
-            <div class="form-group row">
-              <label for="example-text-input" class="col-sm-4 col-form-label">Nombre</label>
-              <div class="col-sm-8">
-                <input class="form-control" type="text" v-model="nombre_playlist" placeholder="Lista de Reproducción" id="example-text-input"
-                />
+                  <div class="form-group row">
+                    <label for="example-text-input" class="col-sm-4 col-form-label">Usuario</label>
+                    <div class="col-8">
+                      <div class="form-group">
+                        <select class="form-control" v-model="id_usuario">
+                          <option value="0" disabled>Seleccione</option>
+                          <option v-for="usuarios in arrayUsers" :key="usuarios.id" :value="usuarios.id" v-text="usuarios.nombre_usuario"
+                          ></option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="example-text-input" class="col-sm-4 col-form-label">Canal</label>
+                    <div class="col-8">
+                      <select class="form-control" v-model="id_canal">
+                        <option value="0" disabled>Seleccione</option>
+                        <option v-for="canales in arrayCanales" :key="canales.id" :value="canales.id" v-text="canales.nombre_canal"
+                        ></option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="example-time-input" class="col-sm-4 col-form-label">Hora Inicio</label>
+                    <div class="col-8">
+                      <input class="form-control" type="time" step="1" value="13:45:00" v-model= "hora_inicio" id="example-time-input" />
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="example-date-input" class="col-sm-4 col-form-label">Emisión</label>
+                    <div class="col-8">
+                      <input class="form-control" type="date" value="2011-08-19" id="example-date-input" v-model="fecha_emision"/>
+                    </div>
+                  </div>
+
+                  <div class="form-group row ">
+                    <label for="example-time-input" class="col-form-label">Loop</label>
+
+                    <input type="checkbox" id="switch7" switch="info" checked />
+                    <label class="loop" for="switch7" data-on-label="Si" data-off-label="No"></label>
+
+                    <label for="example-time-input" class="col-form-label">AutoStart</label>
+
+                    <input type="checkbox" id="switch8" switch="info" checked />
+                    <label class="loop" for="switch8" data-on-label="Si" data-off-label="No"></label>
+
+                    <!--<button type="submit" class="btn btn-primary waves-effect waves-light mr-1">Crear</button>-->
+                  </div>
+                  
+                </form>
               </div>
-            </div>
 
-            <div class="form-group row">
-              <label for="example-text-input" class="col-sm-4 col-form-label">Usuario</label>
-              <div class="col-sm-8">
-                <div class="form-group">
-                  <select class="form-control" v-model="id_usuario">
-                    <option value="0" disabled>Seleccione</option>
-                    <option v-for="usuarios in arrayUsers" :key="usuarios.id" :value="usuarios.id" v-text="usuarios.nombre_usuario"
-                    ></option>
-                  </select>
+
+                  <div class="col-lg-4">
+                      <div class="row">
+                            <div id="gzplayer"></div>
+                      </div>
+                  </div>
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+        <!-- end card -->
+    </div>
+
+
+
+
+    <!-- modal inicio -->
+      <div v-if="showModal">
+        <transition name="fade1">
+          <div class="modal fade1-enter-active bs-example-modal-center show" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" style="display: block; padding-right: 17px;" aria-modal="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title mt-0">Agregar Evento Live</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" @click="showModal = false">×</button>
+                </div>
+                <div class="modal-body">
+                  <label for="example-time-input" class="col-form-label">Nombre live</label>
+                  <input class="form-control" type="text" step="1" value="13:45:00" v-model="nombre_live" />
+                  <label for="example-time-input" class="col-form-label">Duración live</label>
+                  <input class="form-control" type="time" step="1" v-model="duration_live" /><br><br>
+                   <button type="button" class="btn btn-success" @click="agregarLiveVideo()">
+                    <i class="ion ion-md-add-circle"></i> Agregar
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
+        </transition>
+      </div> 
+    <!-- modal fin -->
 
-            <div class="form-group row">
-              <label for="example-text-input" class="col-sm-4 col-form-label">Canal</label>
-              <div class="col-sm-8">
-                <select class="form-control" v-model="id_canal">
-                  <option value="0" disabled>Seleccione</option>
-                  <option v-for="canales in arrayCanales" :key="canales.id" :value="canales.id" v-text="canales.nombre_canal"
-                  ></option>
-                </select>
-              </div>
-            </div>
 
-            <div class="form-group row">
-              <label for="example-time-input" class="col-sm-4 col-form-label">Hora Inicio</label>
-              <div class="col-sm-8">
-                <input class="form-control" type="time" step="1" value="13:45:00" v-model= "hora_inicio" id="example-time-input" />
-              </div>
-            </div>
 
-            <div class="form-group row">
-              <label for="example-date-input" class="col-sm-4 col-form-label">Emisión</label>
-              <div class="col-sm-8">
-                <input class="form-control" type="date" value="2011-08-19" id="example-date-input" v-model="fecha_emision"/>
-              </div>
-            </div>
-
-            <div class="form-group row col-sm-12">
-              <label for="example-time-input" class="col-form-label">Loop</label>
-
-              <input type="checkbox" id="switch7" switch="info" checked />
-              <label class="loop" for="switch7" data-on-label="Si" data-off-label="No"></label>
-
-              <label for="example-time-input" class="col-form-label">AutoStart</label>
-
-              <input type="checkbox" id="switch8" switch="info" checked />
-              <label class="loop" for="switch8" data-on-label="Si" data-off-label="No"></label>
-
-              <!--<button type="submit" class="btn btn-primary waves-effect waves-light mr-1">Crear</button>-->
-            </div>
-          </form>
-        </div>
-      </div>
-
-    </div>
-<!-- Modal Inicio-->
-    <!-- <div class="modal fade bs-example-modal-center show" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" style="display: block; padding-right: 17px;" aria-modal="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title mt-0">Center modal</h5><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button></div><div class="modal-body"><p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p><p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p><p class="mb-0">Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p></div></div> /.modal-content </div> /.modal-dialog</div> -->
-    <div class="col-lg-8">
+    <div class="col-lg-4">
       <div class="card">
         <div class="card-body">
-          <div class="btn-group m-b-15" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-success">
-              <i class="ion ion-md-add-circle"></i> Agregar Live
+          
+            <button type="button" class="btn btn-success" @click="showModal = true">
+              <i class="ion ion-md-add-circle"></i> Live
             </button>
-            <button type="submit" class="btn btn-primary dropdown-toggle">Categorias</button>
-                     <div id="DataTables_Table_0_filter" class="dataTables_filter m-t-10"><label>
-                     <input type="videos"  class="form-control form-control-sm" placeholder="Buscar Vídeos" aria-controls="DataTables_Table_0"></label></div>
+             
 
-          </div>
+            <!-- <button type="submit" class="btn btn-primary dropdown-toggle">Categorias</button> -->
+            
+        
+<div class="btn-group m-b-10">
+  <button type="button" class="btn btn-primary">Primary</button>
+   <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr-only">Toggle Dropdown</span></button>
+   <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(73px, 35px, 0px);">
+     <a class="dropdown-item" href="#">Action</a> 
+     <a class="dropdown-item" href="#">Another action</a> 
+     <a class="dropdown-item" href="#">Something else here</a>
+     <div class="dropdown-divider"></div>
+     <a class="dropdown-item" href="#">Separated link</a>
+  </div>
+</div>
 
+            </br>
+            <label> <input type="videos" v-model="busqueda" class="form-control form-control-sm" placeholder="Buscar Vídeos" aria-controls="DataTables_Table_0"></label>
+
+
+
+
+          
           <div class="table-wrapper-scroll-y my-custom-scrollbar">
           <table class="table table-sm m-0">
             <thead>
               <tr>
-              
                 <th>Nombre Video</th>
                 <th>Tiempo</th>
+                 <!--<th>Peso</th>-->
                 <th><center>Agregar</center></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="videos in arrayVideo.videos" :key="videos.id">
+              <tr v-for="videos in buscarPorTitulo" :key="videos.id">
                 <td v-text="videos.nombre_video"></td>
-                <td v-text="videos.lenght"></td>
+                <td v-text="parseToHour(videos.lenght)"></td>
+                <td v-text="convertirBytes(videos.size)"></td>
                 <td>
                   <button
                     @click="agregarDetalleVideo(videos)"
@@ -114,19 +189,21 @@
           </div>
         </div>
       </div>
+    </div>
 
+    
+    <div class="col-lg-8">
       <div class="card">
         <div class="card-body">
           <div class="table-striped">
             <table class="table table-sm m-10 table-striped">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Hora de Inicio</th>
-                  <th>Hora Finaliza</th>
+                  <th>Entrada</th>
+                  <th>Salida</th>
                   <th>Nombre Video</th>
                   <th>Duración</th>
-                  <th><center>Borrar</center></th>
+                  <th><center>Eliminar</center></th>
                 </tr>
               </thead>
               <draggable
@@ -136,14 +213,12 @@
                 @end="drag = false"
                 tag="tbody"
               >
-                <tr v-for="(videoDetalle,index) in itemsWithSubTotal" :key="index">
-                  <td scope="row">{{videoDetalle.item1.id_video}}</td>
+                <!-- <tr :class="[classEsActiva ? 'table-success' : 'table-info']" v-for="(videoDetalle,index) in itemsWithSubTotal" :key="index"> -->
+                <tr :class="[(videoDetalle.item1.live=='live') ? 'bg-secondary' : '' ]" v-for="(videoDetalle,index) in itemsWithSubTotal" :key="index"> 
                   <td>{{ parseToHour(videoDetalle.subinit) }}</td>
                   <td>{{ parseToHour(videoDetalle.subtotal) }}</td>
                   <td>{{ videoDetalle.item1.nombre_video }}</td>
                   <td>{{ parseToHour(videoDetalle.item1.testduration) }}</td>
-                 
-
                   <td><center>
                     <button
                       type="submit"
@@ -171,33 +246,34 @@
           </div>
 
           <button type="submit" class="btn btn-primary waves-effect waves-light mr-1" @click="registrarPlaylist()"><i class="ti-save"></i> Guardar Lista</button>
-          <button type="submit" class="btn btn-dark waves-effect waves-light mr-1">
+          <button type="submit" class="btn btn-warning waves-effect waves-light mr-1" @click="onPreview()">
             <i class="ti-control-play"></i> Preview
           </button>
         </div>
       </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="form-group">
-            <label>Código Embed Iframe</label>
-            <div>
-              <textarea required class="form-control" rows="3"><iframe></iframe></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
+  
     </div>
+
+    
   </div>
+</div>
+
+
 </template>
 
 <script>
+
+
+
+
+
 import draggable from "vuedraggable";
 var moment = require('moment');
 
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
 
-
+import { uuid } from 'vue-uuid' // Import uuid
 
 const message = [
   "vue.draggable",
@@ -234,8 +310,25 @@ export default {
       arrayCanales: [],
       arrayUsers: [],
       arrayVideo: [],
-      busqueda: 0,
+      arrayTotal: [],
+      busqueda: '',
+      playlist: [
+        {
+          "file" : "/uploads/y2.mp4",
+
+        },
+         {
+          "file" : "/uploads/y2.mp4",
+
+        }
+      ],
+      now: new Date,
+      utc: new Date,
+      showModal: false,
       totalParcial: 0,
+      nombre_live: '',
+      duration_live: 0,
+      classEsActiva: false,
       list: message.map((name, index) => {
         return { name, order: index + 1 };
       }),
@@ -251,30 +344,34 @@ export default {
   methods: {
     listarVideo() {
       let esto = this;
-      var url = "/videos/listarVideos/";
+      var url = "/videos/listarVideos";
       axios
         .get(url)
         .then(function(response) {
-          esto.arrayVideo = response.data;
-          console.log(response);
+          let respuesta = response.data;
+          esto.arrayVideo = respuesta.videos;
+          console.log("respuesta total" + response);
         })
         .catch(function(error) {
           console.log(error);
         });
     },
-    registrarPlaylist() {
-      let esto = this;
-      axios
-        .post("/playlist/registrar", {
+
+    registrarPlaylist(data) {
+      let esto = this  
+      axios.post("/playlist/registrar", {
           id_usuario: esto.id_usuario,
           id_canal: esto.id_canal,
           nombre_playlist: esto.nombre_playlist,
-          hora_inicio: esto.hora_inicio,
+          hora_inicio: moment(esto.hora_inicio, 'HH:mm:ss: A').diff(moment().startOf('day'), 'seconds'),
           hora_final: esto.totalParcial,
           fecha_emision: esto.fecha_emision,
           loop: esto.loop,
           auto_start: esto.auto_start,
-          data: esto.arrayDetallePlaylist
+          data: esto.arrayDetallePlaylist,
+
+     // ID_VIDEO, NOMBRE_VIDEO, TESTDURATION,
+          
         })
         .then(function(response) {
            Vue.swal({
@@ -290,17 +387,28 @@ export default {
           console.log(error);
         });
     },
+    // AGREGA VIDEOS
     agregarDetalleVideo(data = []) {
+      this.classEsActiva = false
       this.arrayDetallePlaylist.push({
         id_video: data["id"],
         nombre_video: data["nombre_video"],
-
-    
     // convierte la hora de video de entrada a segundos
-        testduration: moment(data["lenght"], 'HH:mm:ss: A').diff(moment().startOf('day'), 'seconds'),
+        testduration: data["lenght"],
       });
+    },
+    // AGREGA LIVE
+     agregarLiveVideo() {
+      var v1 = uuid.v1();
+        this.classEsActiva = true,
+        this.arrayDetallePlaylist.unshift({
+        id_video      : v1,
+        nombre_video  : this.nombre_live,
+        testduration  : moment(this.duration_live, 'HH:mm:ss: A').diff(moment().startOf('day'), 'seconds'),
+        live          : 'live'
         
-
+      });
+        console.log(testduration);
     },
     eliminarDetalleVideo(index) {
       let esto = this;
@@ -309,12 +417,11 @@ export default {
     selectUsuarios() {
       let esto = this;
       var url = "/usuarios/selectUsuarios";
-      axios
-        .get(url)
-        .then(function(response) {
-          console.log(response);
+      axios.get(url).then(function(response) {
+         
           let respuesta = response.data;
           esto.arrayUsers = respuesta.usuarios;
+           console.log(esto.arrayUsers);
         })
         .catch(function(error) {
           console.log(error);
@@ -342,7 +449,26 @@ export default {
     sort() {
       this.list = this.list.sort((a, b) => a.order - b.order);
     },
+    onPreview(){
 
+      var videos = this.arrayDetallePlaylist;
+
+  //    var playlist = videos.map(({nombre_video}) => ({file :  "http://10.255.255.35/shared-wow/" + nombre_video}))
+
+      var playlist = videos.map(({nombre_video}) => ({file :  "/uploads/" + nombre_video}))
+
+      console.log(playlist);
+
+        // buscar la sintaxis correcta error en el foreach (foreach si not a function)
+     
+            jwplayer("gzplayer").setup({
+              
+               "playlist" : playlist
+                
+            })
+      },
+
+    
     computeSubTotal: function(item) {
       //formatPrice is removed here because its not defined in the questions
       this.subTotalAcum = this.subTotalAcum + item.testduration;
@@ -352,6 +478,36 @@ export default {
     parseToHour(seconds){
       return moment().startOf('day').seconds(seconds).format('H:mm:ss');
     },
+    horaActual(){
+      var moment = moment().format('MMMM Do YYYY, h:mm:ss a');
+    },
+    
+    convertirBytes(num) {
+            // jacked from: https://github.com/sindresorhus/pretty-bytes
+            if (typeof num !== 'number' || isNaN(num)) {
+                throw new TypeError('Expected a number');
+            }
+
+            var exponent;
+            var unit;
+            var neg = num < 0;
+            var units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+            if (neg) {
+                num = -num;
+            }
+
+            if (num < 1) {
+                return (neg ? '-' : '') + num + ' B';
+            }
+
+            exponent = Math.min(Math.floor(Math.log(num) / Math.log(1000)), units.length - 1);
+            num = (num / Math.pow(1000, exponent)).toFixed(2) * 1;
+            unit = units[exponent];
+
+            return (neg ? '-' : '') + num + ' ' + unit;
+        },
+
 
     total(){
       return this.subTotalAcum
@@ -367,6 +523,9 @@ export default {
         resultado = resultado + parseInt(this.arrayDetallePlaylist[i].lenght);
       }
       return resultado;
+    },
+    buscarPorTitulo() { 
+      return this.arrayVideo.filter((busqueda) => busqueda.nombre_video.toUpperCase().includes(this.busqueda.toUpperCase()))
     },
 
     itemsWithSubTotal() {
@@ -384,6 +543,7 @@ export default {
       //this.arrayDetallePlaylist.testinit = 22;
       //console.log(itemsx)
       return this.arrayDetallePlaylist.map(item1 => ({
+        
         item1,
         subinit: this.subTotalAcum,
         subtotal: this.computeSubTotal(item1)
@@ -406,7 +566,33 @@ export default {
     this.listarVideo();
     this.selectUsuarios();
     this.selectCanales();
+
+
+      // this.utc = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+      // this.local = moment.utc().local().format('YYYY-MM-DD HH:mm:ss')
+    
+    
+
   }
+  // created() {
+  //   setInterval(() => { 
+  //     this.utc = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+  //     this.local = moment.utc().local().format('YYYY-MM-DD HH:mm:ss')
+    
+    
+  //   }); 
+  // }
 };
 </script>
+ <style >
+        .fade1-enter-active, .fade1-leave-active {
+        transition: opacity 5s;
+        }
+        .fade1-enter, .fade1-leave-to /* .fade-leave-active below version 2.1.8 */ {
+        opacity: 0;
+        }
+        .bg-secondary{
+          background-color: rgb(62, 119, 68) !important;
+        }
+    </style>
 

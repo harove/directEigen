@@ -38,7 +38,7 @@
             <div class="form-group row">
               <label for="example-time-input" class="col-sm-4 col-form-label">Hora Inicio</label>
               <div class="col-sm-8">
-                <input class="form-control" type="time" step="1" value="13:45:00" v-model= "hora_inicio" id="example-time-input" />
+                <input class="form-control" type="time" step="1" :value= "hora_inicio" id="example-time-input" />
               </div>
             </div>
 
@@ -205,6 +205,7 @@
 
 import draggable from "vuedraggable";
 var moment = require('moment');
+var momentDuration = require('moment-duration-format');
 
 import VueSweetalert2 from 'vue-sweetalert2';
 Vue.use(VueSweetalert2);
@@ -239,7 +240,6 @@ export default {
             testduration: 0,
             testinit: 0,
             totalParcial: 0,
-            hora_inicio: 0,
             fecha_emision: 0,
        
             
@@ -269,11 +269,11 @@ methods: {
           arrayTemporal = respuesta.playlist;
 
           this.nombre_playlist  = arrayTemporal[0]['nombre_playlist'];
-          this.hora_inicio      = arrayTemporal[0]['hora_inicio'];
+          this.hora_inicio      = moment.duration(arrayTemporal[0]['hora_inicio'],"seconds").format("HH:mm:ss");
+          // console.log("hora de inicio" + this.hora_inicio );
           this.fecha_emision    = arrayTemporal[0]['fecha_emision'];
           this.id_usuario       = arrayTemporal[0]['id_usuario'];
           this.id_canal         = arrayTemporal[0]['id_canal'];
-
 
 
         }).catch(error =>{

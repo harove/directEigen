@@ -18,8 +18,8 @@ Route::get('/', function () {
   Route::get('/canales/selectCanales', 'CanalController@selectCanales');
  //Videos
   Route::post('/uploadFiles','VideoController@uploadFiles')->name('upload-files');
-  route::get('/videos','VideoController@index')->name('videos');
-  route::get('/videos/listarVideos','VideoController@listarVideo')->name('listarVideos');
+  //route::get('/videos','VideoController@index')->name('videos');
+  route::get('/videos/listarVideos','VideoController@index')->name('videos');
   route::post('/videos/registrar','VideoController@store')->name('videos/registrar');
 //Playlist
   route::get('/playlist/listarPlaylist','PlaylistController@index')->name('playlist');
@@ -30,4 +30,4 @@ Route::get('/', function () {
   route::get('edit/edit/mostrar/detalle_playlist/lista/canal/{id}','PlaylistController@mostrarCanal');
   route::get('edit/edit/mostrar/detalle_playlist/lista/usuario/{id}','PlaylistController@mostrarUsuario');
 
- 
+  Route::get('/{any?}', 'PlaylistController@dc')->name('layouts.master')->where('any','.*');

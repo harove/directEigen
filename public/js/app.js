@@ -1797,6 +1797,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 Vue.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
@@ -1809,16 +1813,21 @@ __webpack_require__(/*! jwplayer-node */ "./node_modules/jwplayer-node/index.js"
       nombre_canal: '',
       tamaño_player: 0,
       imagen_canal: '',
-      fondo_canal: ''
+      fondo_canal: '',
+      counter: 0
     };
   },
   methods: {
+    nombrarCanal: function nombrarCanal(e) {
+      console.log(e);
+      this.nombre_canal = e.target.value;
+    },
     registrarCanal: function registrarCanal(data) {
       axios.post("/canales/registrar", {
-        imagen_canal: esto.imagen_canal,
-        nombre_canal: esto.nombre_canal,
-        tamaño_player: esto.tamaño_player,
-        fondo_canal: esto.fondo_canal
+        imagen_canal: this.imagen_canal,
+        nombre_canal: this.nombre_canal,
+        tamaño_player: this.tamaño_player,
+        fondo_canal: this.fondo_canal
       }).then(function (response) {
         Vue.swal({
           toast: true,
@@ -1885,6 +1894,78 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_sweetalert2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-sweetalert2 */ "./node_modules/vue-sweetalert2/dist/index.js");
+/* harmony import */ var vue_uuid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-uuid */ "./node_modules/vue-uuid/dist/vue-uuid.es.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2083,6 +2164,8 @@ var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js"
 
 
 Vue.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_1__["default"]);
+ // Import uuid
+
 var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "based", "on", "Sortablejs"];
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "transition-example-2",
@@ -2109,8 +2192,20 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
       arrayCanales: [],
       arrayUsers: [],
       arrayVideo: [],
-      busqueda: 0,
+      arrayTotal: [],
+      busqueda: '',
+      playlist: [{
+        "file": "/uploads/y2.mp4"
+      }, {
+        "file": "/uploads/y2.mp4"
+      }],
+      now: new Date(),
+      utc: new Date(),
+      showModal: false,
       totalParcial: 0,
+      nombre_live: '',
+      duration_live: 0,
+      classEsActiva: false,
       list: message.map(function (name, index) {
         return {
           name: name,
@@ -2129,26 +2224,28 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
   methods: {
     listarVideo: function listarVideo() {
       var esto = this;
-      var url = "/videos/listarVideos/";
+      var url = "/videos/listarVideos";
       axios.get(url).then(function (response) {
-        esto.arrayVideo = response.data;
-        console.log(response);
+        var respuesta = response.data;
+        esto.arrayVideo = respuesta.videos;
+        console.log("respuesta total" + response);
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    registrarPlaylist: function registrarPlaylist() {
+    registrarPlaylist: function registrarPlaylist(data) {
       var esto = this;
       axios.post("/playlist/registrar", {
         id_usuario: esto.id_usuario,
         id_canal: esto.id_canal,
         nombre_playlist: esto.nombre_playlist,
-        hora_inicio: esto.hora_inicio,
+        hora_inicio: moment(esto.hora_inicio, 'HH:mm:ss: A').diff(moment().startOf('day'), 'seconds'),
         hora_final: esto.totalParcial,
         fecha_emision: esto.fecha_emision,
         loop: esto.loop,
         auto_start: esto.auto_start,
-        data: esto.arrayDetallePlaylist
+        data: esto.arrayDetallePlaylist // ID_VIDEO, NOMBRE_VIDEO, TESTDURATION,
+
       }).then(function (response) {
         Vue.swal({
           toast: true,
@@ -2162,14 +2259,27 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
         console.log(error);
       });
     },
+    // AGREGA VIDEOS
     agregarDetalleVideo: function agregarDetalleVideo() {
       var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      this.classEsActiva = false;
       this.arrayDetallePlaylist.push({
         id_video: data["id"],
         nombre_video: data["nombre_video"],
         // convierte la hora de video de entrada a segundos
-        testduration: moment(data["lenght"], 'HH:mm:ss: A').diff(moment().startOf('day'), 'seconds')
+        testduration: data["lenght"]
       });
+    },
+    // AGREGA LIVE
+    agregarLiveVideo: function agregarLiveVideo() {
+      var v1 = vue_uuid__WEBPACK_IMPORTED_MODULE_2__["uuid"].v1();
+      this.classEsActiva = true, this.arrayDetallePlaylist.unshift({
+        id_video: v1,
+        nombre_video: this.nombre_live,
+        testduration: moment(this.duration_live, 'HH:mm:ss: A').diff(moment().startOf('day'), 'seconds'),
+        live: 'live'
+      });
+      console.log(testduration);
     },
     eliminarDetalleVideo: function eliminarDetalleVideo(index) {
       var esto = this;
@@ -2179,9 +2289,9 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
       var esto = this;
       var url = "/usuarios/selectUsuarios";
       axios.get(url).then(function (response) {
-        console.log(response);
         var respuesta = response.data;
         esto.arrayUsers = respuesta.usuarios;
+        console.log(esto.arrayUsers);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2207,6 +2317,21 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
         return a.order - b.order;
       });
     },
+    onPreview: function onPreview() {
+      var videos = this.arrayDetallePlaylist; //    var playlist = videos.map(({nombre_video}) => ({file :  "http://10.255.255.35/shared-wow/" + nombre_video}))
+
+      var playlist = videos.map(function (_ref) {
+        var nombre_video = _ref.nombre_video;
+        return {
+          file: "/uploads/" + nombre_video
+        };
+      });
+      console.log(playlist); // buscar la sintaxis correcta error en el foreach (foreach si not a function)
+
+      jwplayer("gzplayer").setup({
+        "playlist": playlist
+      });
+    },
     computeSubTotal: function computeSubTotal(item) {
       //formatPrice is removed here because its not defined in the questions
       this.subTotalAcum = this.subTotalAcum + item.testduration;
@@ -2214,6 +2339,33 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
     },
     parseToHour: function parseToHour(seconds) {
       return moment().startOf('day').seconds(seconds).format('H:mm:ss');
+    },
+    horaActual: function horaActual() {
+      var moment = moment().format('MMMM Do YYYY, h:mm:ss a');
+    },
+    convertirBytes: function convertirBytes(num) {
+      // jacked from: https://github.com/sindresorhus/pretty-bytes
+      if (typeof num !== 'number' || isNaN(num)) {
+        throw new TypeError('Expected a number');
+      }
+
+      var exponent;
+      var unit;
+      var neg = num < 0;
+      var units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+      if (neg) {
+        num = -num;
+      }
+
+      if (num < 1) {
+        return (neg ? '-' : '') + num + ' B';
+      }
+
+      exponent = Math.min(Math.floor(Math.log(num) / Math.log(1000)), units.length - 1);
+      num = (num / Math.pow(1000, exponent)).toFixed(2) * 1;
+      unit = units[exponent];
+      return (neg ? '-' : '') + num + ' ' + unit;
     },
     total: function total() {
       return this.subTotalAcum;
@@ -2229,8 +2381,15 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
 
       return resultado;
     },
-    itemsWithSubTotal: function itemsWithSubTotal() {
+    buscarPorTitulo: function buscarPorTitulo() {
       var _this = this;
+
+      return this.arrayVideo.filter(function (busqueda) {
+        return busqueda.nombre_video.toUpperCase().includes(_this.busqueda.toUpperCase());
+      });
+    },
+    itemsWithSubTotal: function itemsWithSubTotal() {
+      var _this2 = this;
 
       //var itemsx = [];
       //  console.log(this.hora_inicio); 
@@ -2245,8 +2404,8 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
       return this.arrayDetallePlaylist.map(function (item1) {
         return {
           item1: item1,
-          subinit: _this.subTotalAcum,
-          subtotal: _this.computeSubTotal(item1)
+          subinit: _this2.subTotalAcum,
+          subtotal: _this2.computeSubTotal(item1)
         };
       });
     },
@@ -2262,8 +2421,15 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
   mounted: function mounted() {
     this.listarVideo();
     this.selectUsuarios();
-    this.selectCanales();
-  }
+    this.selectCanales(); // this.utc = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+    // this.local = moment.utc().local().format('YYYY-MM-DD HH:mm:ss')
+  } // created() {
+  //   setInterval(() => { 
+  //     this.utc = moment.utc().format('YYYY-MM-DD HH:mm:ss')
+  //     this.local = moment.utc().local().format('YYYY-MM-DD HH:mm:ss')
+  //   }); 
+  // }
+
 });
 
 /***/ }),
@@ -2280,8 +2446,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_sweetalert2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-sweetalert2 */ "./node_modules/vue-sweetalert2/dist/index.js");
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
@@ -2489,14 +2653,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
+var momentDuration = __webpack_require__(/*! moment-duration-format */ "./node_modules/moment-duration-format/lib/moment-duration-format.js");
+
 
 Vue.use(vue_sweetalert2__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "based", "on", "Sortablejs"];
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    var _ref;
-
-    return _ref = {
+    return {
       id_video: 0,
       id_usuario: 0,
       id_canal: 0,
@@ -2512,8 +2676,9 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
       hora_inicio: 0,
       testduration: 0,
       testinit: 0,
-      totalParcial: 0
-    }, _defineProperty(_ref, "hora_inicio", 0), _defineProperty(_ref, "fecha_emision", 0), _ref;
+      totalParcial: 0,
+      fecha_emision: 0
+    };
   },
   methods: {
     mostrarDetallePlaylist: function mostrarDetallePlaylist() {
@@ -2539,7 +2704,8 @@ var message = ["vue.draggable", "draggable", "component", "for", "vue.js 2.0", "
         var respuesta = response.data;
         arrayTemporal = respuesta.playlist;
         _this2.nombre_playlist = arrayTemporal[0]['nombre_playlist'];
-        _this2.hora_inicio = arrayTemporal[0]['hora_inicio'];
+        _this2.hora_inicio = moment.duration(arrayTemporal[0]['hora_inicio'], "seconds").format("HH:mm:ss"); // console.log("hora de inicio" + this.hora_inicio );
+
         _this2.fecha_emision = arrayTemporal[0]['fecha_emision'];
         _this2.id_usuario = arrayTemporal[0]['id_usuario'];
         _this2.id_canal = arrayTemporal[0]['id_canal'];
@@ -9586,6 +9752,25 @@ module.exports = charenc;
 
   module.exports = crypt;
 })();
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.fade1-enter-active, .fade1-leave-active {\ntransition: opacity 5s;\n}\n.fade1-enter, .fade1-leave-to /* .fade-leave-active below version 2.1.8 */ {\nopacity: 0;\n}\n.bg-secondary{\n  background-color: rgb(62, 119, 68) !important;\n}\n", ""]);
+
+// exports
 
 
 /***/ }),
@@ -41881,6 +42066,1747 @@ module.exports = function (config = {}, priv = {}) {
 
 /***/ }),
 
+/***/ "./node_modules/moment-duration-format/lib/moment-duration-format.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/moment-duration-format/lib/moment-duration-format.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! Moment Duration Format v2.2.2
+ *  https://github.com/jsmreese/moment-duration-format
+ *  Date: 2018-02-16
+ *
+ *  Duration format plugin function for the Moment.js library
+ *  http://momentjs.com/
+ *
+ *  Copyright 2018 John Madhavan-Reese
+ *  Released under the MIT license
+ */
+
+(function (root, factory) {
+    if (true) {
+        // AMD. Register as an anonymous module.
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! moment */ "./node_modules/moment/moment.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else {}
+
+    if (root) {
+        // Globals.
+        root.momentDurationFormatSetup = root.moment ? factory(root.moment) : factory;
+    }
+})(this, function (moment) {
+    // `Number#tolocaleString` is tested on plugin initialization.
+    // If the feature test passes, `toLocaleStringWorks` will be set to `true` and the
+    // native function will be used to generate formatted output. If the feature
+    // test fails, the fallback format function internal to this plugin will be
+    // used.
+    var toLocaleStringWorks = false;
+
+    // `Number#toLocaleString` rounds incorrectly for select numbers in Microsoft
+    // environments (Edge, IE11, Windows Phone) and possibly other environments.
+    // If the rounding test fails and `toLocaleString` will be used for formatting,
+    // the plugin will "pre-round" number values using the fallback number format
+    // function before passing them to `toLocaleString` for final formatting.
+    var toLocaleStringRoundingWorks = false;
+
+    // `Intl.NumberFormat#format` is tested on plugin initialization.
+    // If the feature test passes, `intlNumberFormatRoundingWorks` will be set to
+    // `true` and the native function will be used to generate formatted output.
+    // If the feature test fails, either `Number#tolocaleString` (if
+    // `toLocaleStringWorks` is `true`), or the fallback format function internal
+    //  to this plugin will be used.
+    var intlNumberFormatWorks = false;
+
+    // `Intl.NumberFormat#format` rounds incorrectly for select numbers in Microsoft
+    // environments (Edge, IE11, Windows Phone) and possibly other environments.
+    // If the rounding test fails and `Intl.NumberFormat#format` will be used for
+    // formatting, the plugin will "pre-round" number values using the fallback number
+    // format function before passing them to `Intl.NumberFormat#format` for final
+    // formatting.
+    var intlNumberFormatRoundingWorks = false;
+
+    // Token type names in order of descending magnitude.
+    var types = "escape years months weeks days hours minutes seconds milliseconds general".split(" ");
+
+    var bubbles = [
+        {
+            type: "seconds",
+            targets: [
+                { type: "minutes", value: 60 },
+                { type: "hours", value: 3600 },
+                { type: "days", value: 86400 },
+                { type: "weeks", value: 604800 },
+                { type: "months", value: 2678400 },
+                { type: "years", value: 31536000 }
+            ]
+        },
+        {
+            type: "minutes",
+            targets: [
+                { type: "hours", value: 60 },
+                { type: "days", value: 1440 },
+                { type: "weeks", value: 10080 },
+                { type: "months", value: 44640 },
+                { type: "years", value: 525600 }
+            ]
+        },
+        {
+            type: "hours",
+            targets: [
+                { type: "days", value: 24 },
+                { type: "weeks", value: 168 },
+                { type: "months", value: 744 },
+                { type: "years", value: 8760 }
+            ]
+        },
+        {
+            type: "days",
+            targets: [
+                { type: "weeks", value: 7 },
+                { type: "months", value: 31 },
+                { type: "years", value: 365 }
+            ]
+        },
+        {
+            type: "months",
+            targets: [
+                { type: "years", value: 12 }
+            ]
+        }
+    ];
+
+    // stringIncludes
+    function stringIncludes(str, search) {
+        if (search.length > str.length) {
+          return false;
+        }
+
+        return str.indexOf(search) !== -1;
+    }
+
+    // repeatZero(qty)
+    // Returns "0" repeated `qty` times.
+    // `qty` must be a integer >= 0.
+    function repeatZero(qty) {
+        var result = "";
+
+        while (qty) {
+            result += "0";
+            qty -= 1;
+        }
+
+        return result;
+    }
+
+    function stringRound(digits) {
+        var digitsArray = digits.split("").reverse();
+        var i = 0;
+        var carry = true;
+
+        while (carry && i < digitsArray.length) {
+            if (i) {
+                if (digitsArray[i] === "9") {
+                    digitsArray[i] = "0";
+                } else {
+                    digitsArray[i] = (parseInt(digitsArray[i], 10) + 1).toString();
+                    carry = false;
+                }
+            } else {
+                if (parseInt(digitsArray[i], 10) < 5) {
+                    carry = false;
+                }
+
+                digitsArray[i] = "0";
+            }
+
+            i += 1;
+        }
+
+        if (carry) {
+            digitsArray.push("1");
+        }
+
+        return digitsArray.reverse().join("");
+    }
+
+    // cachedNumberFormat
+    // Returns an `Intl.NumberFormat` instance for the given locale and configuration.
+    // On first use of a particular configuration, the instance is cached for fast
+    // repeat access.
+    function cachedNumberFormat(locale, options) {
+        // Create a sorted, stringified version of `options`
+        // for use as part of the cache key
+        var optionsString = map(
+            keys(options).sort(),
+            function(key) {
+                return key + ':' + options[key];
+            }
+        ).join(',');
+
+        // Set our cache key
+        var cacheKey = locale + '+' + optionsString;
+
+        // If we don't have this configuration cached, configure and cache it
+        if (!cachedNumberFormat.cache[cacheKey]) {
+            cachedNumberFormat.cache[cacheKey] = Intl.NumberFormat(locale, options);
+        }
+
+        // Return the cached version of this configuration
+        return cachedNumberFormat.cache[cacheKey];
+    }
+    cachedNumberFormat.cache = {};
+
+    // formatNumber
+    // Formats any number greater than or equal to zero using these options:
+    // - userLocale
+    // - useToLocaleString
+    // - useGrouping
+    // - grouping
+    // - maximumSignificantDigits
+    // - minimumIntegerDigits
+    // - fractionDigits
+    // - groupingSeparator
+    // - decimalSeparator
+    //
+    // `useToLocaleString` will use `Intl.NumberFormat` or `toLocaleString` for formatting.
+    // `userLocale` option is passed through to the formatting function.
+    // `fractionDigits` is passed through to `maximumFractionDigits` and `minimumFractionDigits`
+    // Using `maximumSignificantDigits` will override `minimumIntegerDigits` and `fractionDigits`.
+    function formatNumber(number, options, userLocale) {
+        var useToLocaleString = options.useToLocaleString;
+        var useGrouping = options.useGrouping;
+        var grouping = useGrouping && options.grouping.slice();
+        var maximumSignificantDigits = options.maximumSignificantDigits;
+        var minimumIntegerDigits = options.minimumIntegerDigits || 1;
+        var fractionDigits = options.fractionDigits || 0;
+        var groupingSeparator = options.groupingSeparator;
+        var decimalSeparator = options.decimalSeparator;
+
+        if (useToLocaleString && userLocale) {
+            var localeStringOptions = {
+                minimumIntegerDigits: minimumIntegerDigits,
+                useGrouping: useGrouping
+            };
+
+            if (fractionDigits) {
+                localeStringOptions.maximumFractionDigits = fractionDigits;
+                localeStringOptions.minimumFractionDigits = fractionDigits;
+            }
+
+            // toLocaleString output is "0.0" instead of "0" for HTC browsers
+            // when maximumSignificantDigits is set. See #96.
+            if (maximumSignificantDigits && number > 0) {
+                localeStringOptions.maximumSignificantDigits = maximumSignificantDigits;
+            }
+
+            if (intlNumberFormatWorks) {
+                if (!intlNumberFormatRoundingWorks) {
+                    var roundingOptions = extend({}, options);
+                    roundingOptions.useGrouping = false;
+                    roundingOptions.decimalSeparator = ".";
+                    number = parseFloat(formatNumber(number, roundingOptions), 10);
+                }
+
+                return cachedNumberFormat(userLocale, localeStringOptions).format(number);
+            } else {
+                if (!toLocaleStringRoundingWorks) {
+                    var roundingOptions = extend({}, options);
+                    roundingOptions.useGrouping = false;
+                    roundingOptions.decimalSeparator = ".";
+                    number = parseFloat(formatNumber(number, roundingOptions), 10);
+                }
+
+                return number.toLocaleString(userLocale, localeStringOptions);
+            }
+        }
+
+        var numberString;
+
+        // Add 1 to digit output length for floating point errors workaround. See below.
+        if (maximumSignificantDigits) {
+            numberString = number.toPrecision(maximumSignificantDigits + 1);
+        } else {
+            numberString = number.toFixed(fractionDigits + 1);
+        }
+
+        var integerString;
+        var fractionString;
+        var exponentString;
+
+        var temp = numberString.split("e");
+
+        exponentString = temp[1] || "";
+
+        temp = temp[0].split(".");
+
+        fractionString = temp[1] || "";
+        integerString = temp[0] || "";
+
+        // Workaround for floating point errors in `toFixed` and `toPrecision`.
+        // (3.55).toFixed(1); --> "3.5"
+        // (123.55 - 120).toPrecision(2); --> "3.5"
+        // (123.55 - 120); --> 3.549999999999997
+        // (123.55 - 120).toFixed(2); --> "3.55"
+        // Round by examing the string output of the next digit.
+
+        // *************** Implement String Rounding here ***********************
+        // Check integerString + fractionString length of toPrecision before rounding.
+        // Check length of fractionString from toFixed output before rounding.
+        var integerLength = integerString.length;
+        var fractionLength = fractionString.length;
+        var digitCount = integerLength + fractionLength;
+        var digits = integerString + fractionString;
+
+        if (maximumSignificantDigits && digitCount === (maximumSignificantDigits + 1) || !maximumSignificantDigits && fractionLength === (fractionDigits + 1)) {
+            // Round digits.
+            digits = stringRound(digits);
+
+            if (digits.length === digitCount + 1) {
+                integerLength = integerLength + 1;
+            }
+
+            // Discard final fractionDigit.
+            if (fractionLength) {
+                digits = digits.slice(0, -1);
+            }
+
+            // Separate integer and fraction.
+            integerString = digits.slice(0, integerLength);
+            fractionString = digits.slice(integerLength);
+        }
+
+        // Trim trailing zeroes from fractionString because toPrecision outputs
+        // precision, not significant digits.
+        if (maximumSignificantDigits) {
+            fractionString = fractionString.replace(/0*$/, "");
+        }
+
+        // Handle exponent.
+        var exponent = parseInt(exponentString, 10);
+
+        if (exponent > 0) {
+            if (fractionString.length <= exponent) {
+                fractionString = fractionString + repeatZero(exponent - fractionString.length);
+
+                integerString = integerString + fractionString;
+                fractionString = "";
+            } else {
+                integerString = integerString + fractionString.slice(0, exponent);
+                fractionString = fractionString.slice(exponent);
+            }
+        } else if (exponent < 0) {
+            fractionString = (repeatZero(Math.abs(exponent) - integerString.length) + integerString + fractionString);
+
+            integerString = "0";
+        }
+
+        if (!maximumSignificantDigits) {
+            // Trim or pad fraction when not using maximumSignificantDigits.
+            fractionString = fractionString.slice(0, fractionDigits);
+
+            if (fractionString.length < fractionDigits) {
+                fractionString = fractionString + repeatZero(fractionDigits - fractionString.length);
+            }
+
+            // Pad integer when using minimumIntegerDigits
+            // and not using maximumSignificantDigits.
+            if (integerString.length < minimumIntegerDigits) {
+                integerString = repeatZero(minimumIntegerDigits - integerString.length) + integerString;
+            }
+        }
+
+        var formattedString = "";
+
+        // Handle grouping.
+        if (useGrouping) {
+            temp = integerString;
+            var group;
+
+            while (temp.length) {
+                if (grouping.length) {
+                    group = grouping.shift();
+                }
+
+                if (formattedString) {
+                    formattedString = groupingSeparator + formattedString;
+                }
+
+                formattedString = temp.slice(-group) + formattedString;
+
+                temp = temp.slice(0, -group);
+            }
+        } else {
+            formattedString = integerString;
+        }
+
+        // Add decimalSeparator and fraction.
+        if (fractionString) {
+            formattedString = formattedString + decimalSeparator + fractionString;
+        }
+
+        return formattedString;
+    }
+
+    // durationLabelCompare
+    function durationLabelCompare(a, b) {
+        if (a.label.length > b.label.length) {
+            return -1;
+        }
+
+        if (a.label.length < b.label.length) {
+            return 1;
+        }
+
+        // a must be equal to b
+        return 0;
+    }
+
+    // durationGetLabels
+    function durationGetLabels(token, localeData) {
+        var labels = [];
+
+        each(keys(localeData), function (localeDataKey) {
+            if (localeDataKey.slice(0, 15) !== "_durationLabels") {
+                return;
+            }
+
+            var labelType = localeDataKey.slice(15).toLowerCase();
+
+            each(keys(localeData[localeDataKey]), function (labelKey) {
+                if (labelKey.slice(0, 1) === token) {
+                    labels.push({
+                        type: labelType,
+                        key: labelKey,
+                        label: localeData[localeDataKey][labelKey]
+                    });
+                }
+            });
+        });
+
+        return labels;
+    }
+
+    // durationPluralKey
+    function durationPluralKey(token, integerValue, decimalValue) {
+        // Singular for a value of `1`, but not for `1.0`.
+        if (integerValue === 1 && decimalValue === null) {
+            return token;
+        }
+
+        return token + token;
+    }
+
+    var engLocale = {
+        durationLabelsStandard: {
+            S: 'millisecond',
+            SS: 'milliseconds',
+            s: 'second',
+            ss: 'seconds',
+            m: 'minute',
+            mm: 'minutes',
+            h: 'hour',
+            hh: 'hours',
+            d: 'day',
+            dd: 'days',
+            w: 'week',
+            ww: 'weeks',
+            M: 'month',
+            MM: 'months',
+            y: 'year',
+            yy: 'years'
+        },
+        durationLabelsShort: {
+            S: 'msec',
+            SS: 'msecs',
+            s: 'sec',
+            ss: 'secs',
+            m: 'min',
+            mm: 'mins',
+            h: 'hr',
+            hh: 'hrs',
+            d: 'dy',
+            dd: 'dys',
+            w: 'wk',
+            ww: 'wks',
+            M: 'mo',
+            MM: 'mos',
+            y: 'yr',
+            yy: 'yrs'
+        },
+        durationTimeTemplates: {
+            HMS: 'h:mm:ss',
+            HM: 'h:mm',
+            MS: 'm:ss'
+        },
+        durationLabelTypes: [
+            { type: "standard", string: "__" },
+            { type: "short", string: "_" }
+        ],
+        durationPluralKey: durationPluralKey
+    };
+
+    // isArray
+    function isArray(array) {
+        return Object.prototype.toString.call(array) === "[object Array]";
+    }
+
+    // isObject
+    function isObject(obj) {
+        return Object.prototype.toString.call(obj) === "[object Object]";
+    }
+
+    // findLast
+    function findLast(array, callback) {
+        var index = array.length;
+
+        while (index -= 1) {
+            if (callback(array[index])) { return array[index]; }
+        }
+    }
+
+    // find
+    function find(array, callback) {
+        var index = 0;
+
+        var max = array && array.length || 0;
+
+        var match;
+
+        if (typeof callback !== "function") {
+            match = callback;
+            callback = function (item) {
+                return item === match;
+            };
+        }
+
+        while (index < max) {
+            if (callback(array[index])) { return array[index]; }
+            index += 1;
+        }
+    }
+
+    // each
+    function each(array, callback) {
+        var index = 0,
+            max = array.length;
+
+        if (!array || !max) { return; }
+
+        while (index < max) {
+            if (callback(array[index], index) === false) { return; }
+            index += 1;
+        }
+    }
+
+    // map
+    function map(array, callback) {
+        var index = 0,
+            max = array.length,
+            ret = [];
+
+        if (!array || !max) { return ret; }
+
+        while (index < max) {
+            ret[index] = callback(array[index], index);
+            index += 1;
+        }
+
+        return ret;
+    }
+
+    // pluck
+    function pluck(array, prop) {
+        return map(array, function (item) {
+            return item[prop];
+        });
+    }
+
+    // compact
+    function compact(array) {
+        var ret = [];
+
+        each(array, function (item) {
+            if (item) { ret.push(item); }
+        });
+
+        return ret;
+    }
+
+    // unique
+    function unique(array) {
+        var ret = [];
+
+        each(array, function (_a) {
+            if (!find(ret, _a)) { ret.push(_a); }
+        });
+
+        return ret;
+    }
+
+    // intersection
+    function intersection(a, b) {
+        var ret = [];
+
+        each(a, function (_a) {
+            each(b, function (_b) {
+                if (_a === _b) { ret.push(_a); }
+            });
+        });
+
+        return unique(ret);
+    }
+
+    // rest
+    function rest(array, callback) {
+        var ret = [];
+
+        each(array, function (item, index) {
+            if (!callback(item)) {
+                ret = array.slice(index);
+                return false;
+            }
+        });
+
+        return ret;
+    }
+
+    // initial
+    function initial(array, callback) {
+        var reversed = array.slice().reverse();
+
+        return rest(reversed, callback).reverse();
+    }
+
+    // extend
+    function extend(a, b) {
+        for (var key in b) {
+            if (b.hasOwnProperty(key)) { a[key] = b[key]; }
+        }
+
+        return a;
+    }
+
+    // keys
+    function keys(a) {
+        var ret = [];
+
+        for (var key in a) {
+            if (a.hasOwnProperty(key)) { ret.push(key); }
+        }
+
+        return ret;
+    }
+
+    // any
+    function any(array, callback) {
+        var index = 0,
+            max = array.length;
+
+        if (!array || !max) { return false; }
+
+        while (index < max) {
+            if (callback(array[index], index) === true) { return true; }
+            index += 1;
+        }
+
+        return false;
+    }
+
+    // flatten
+    function flatten(array) {
+        var ret = [];
+
+        each(array, function(child) {
+            ret = ret.concat(child);
+        });
+
+        return ret;
+    }
+
+    function toLocaleStringSupportsLocales() {
+        var number = 0;
+        try {
+            number.toLocaleString('i');
+        } catch (e) {
+            return e.name === 'RangeError';
+        }
+        return false;
+    }
+
+    function featureTestFormatterRounding(formatter) {
+        return formatter(3.55, "en", {
+            useGrouping: false,
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1
+        }) === "3.6";
+    }
+
+    function featureTestFormatter(formatter) {
+        var passed = true;
+
+        // Test minimumIntegerDigits.
+        passed = passed && formatter(1, "en", { minimumIntegerDigits: 1 }) === "1";
+        passed = passed && formatter(1, "en", { minimumIntegerDigits: 2 }) === "01";
+        passed = passed && formatter(1, "en", { minimumIntegerDigits: 3 }) === "001";
+        if (!passed) { return false; }
+
+        // Test maximumFractionDigits and minimumFractionDigits.
+        passed = passed && formatter(99.99, "en", { maximumFractionDigits: 0, minimumFractionDigits: 0 }) === "100";
+        passed = passed && formatter(99.99, "en", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) === "100.0";
+        passed = passed && formatter(99.99, "en", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) === "99.99";
+        passed = passed && formatter(99.99, "en", { maximumFractionDigits: 3, minimumFractionDigits: 3 }) === "99.990";
+        if (!passed) { return false; }
+
+        // Test maximumSignificantDigits.
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 1 }) === "100";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 2 }) === "100";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 3 }) === "100";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 4 }) === "99.99";
+        passed = passed && formatter(99.99, "en", { maximumSignificantDigits: 5 }) === "99.99";
+        if (!passed) { return false; }
+
+        // Test grouping.
+        passed = passed && formatter(1000, "en", { useGrouping: true }) === "1,000";
+        passed = passed && formatter(1000, "en", { useGrouping: false }) === "1000";
+        if (!passed) { return false; }
+
+        return true;
+    }
+
+    // durationsFormat(durations [, template] [, precision] [, settings])
+    function durationsFormat() {
+        var args = [].slice.call(arguments);
+        var settings = {};
+        var durations;
+
+        // Parse arguments.
+        each(args, function (arg, index) {
+            if (!index) {
+                if (!isArray(arg)) {
+                    throw "Expected array as the first argument to durationsFormat.";
+                }
+
+                durations = arg;
+            }
+
+            if (typeof arg === "string" || typeof arg === "function") {
+                settings.template = arg;
+                return;
+            }
+
+            if (typeof arg === "number") {
+                settings.precision = arg;
+                return;
+            }
+
+            if (isObject(arg)) {
+                extend(settings, arg);
+            }
+        });
+
+        if (!durations || !durations.length) {
+            return [];
+        }
+
+        settings.returnMomentTypes = true;
+
+        var formattedDurations = map(durations, function (dur) {
+            return dur.format(settings);
+        });
+
+        // Merge token types from all durations.
+        var outputTypes = intersection(types, unique(pluck(flatten(formattedDurations), "type")));
+
+        var largest = settings.largest;
+
+        if (largest) {
+            outputTypes = outputTypes.slice(0, largest);
+        }
+
+        settings.returnMomentTypes = false;
+        settings.outputTypes = outputTypes;
+
+        return map(durations, function (dur) {
+            return dur.format(settings);
+        });
+    }
+
+    // durationFormat([template] [, precision] [, settings])
+    function durationFormat() {
+
+        var args = [].slice.call(arguments);
+        var settings = extend({}, this.format.defaults);
+
+        // Keep a shadow copy of this moment for calculating remainders.
+        // Perform all calculations on positive duration value, handle negative
+        // sign at the very end.
+        var asMilliseconds = this.asMilliseconds();
+        var asMonths = this.asMonths();
+
+        // Treat invalid durations as having a value of 0 milliseconds.
+        if (typeof this.isValid === "function" && this.isValid() === false) {
+            asMilliseconds = 0;
+            asMonths = 0;
+        }
+
+        var isNegative = asMilliseconds < 0;
+
+        // Two shadow copies are needed because of the way moment.js handles
+        // duration arithmetic for years/months and for weeks/days/hours/minutes/seconds.
+        var remainder = moment.duration(Math.abs(asMilliseconds), "milliseconds");
+        var remainderMonths = moment.duration(Math.abs(asMonths), "months");
+
+        // Parse arguments.
+        each(args, function (arg) {
+            if (typeof arg === "string" || typeof arg === "function") {
+                settings.template = arg;
+                return;
+            }
+
+            if (typeof arg === "number") {
+                settings.precision = arg;
+                return;
+            }
+
+            if (isObject(arg)) {
+                extend(settings, arg);
+            }
+        });
+
+        var momentTokens = {
+            years: "y",
+            months: "M",
+            weeks: "w",
+            days: "d",
+            hours: "h",
+            minutes: "m",
+            seconds: "s",
+            milliseconds: "S"
+        };
+
+        var tokenDefs = {
+            escape: /\[(.+?)\]/,
+            years: /\*?[Yy]+/,
+            months: /\*?M+/,
+            weeks: /\*?[Ww]+/,
+            days: /\*?[Dd]+/,
+            hours: /\*?[Hh]+/,
+            minutes: /\*?m+/,
+            seconds: /\*?s+/,
+            milliseconds: /\*?S+/,
+            general: /.+?/
+        };
+
+        // Types array is available in the template function.
+        settings.types = types;
+
+        var typeMap = function (token) {
+            return find(types, function (type) {
+                return tokenDefs[type].test(token);
+            });
+        };
+
+        var tokenizer = new RegExp(map(types, function (type) {
+            return tokenDefs[type].source;
+        }).join("|"), "g");
+
+        // Current duration object is available in the template function.
+        settings.duration = this;
+
+        // Eval template function and cache template string.
+        var template = typeof settings.template === "function" ? settings.template.apply(settings) : settings.template;
+
+        // outputTypes and returnMomentTypes are settings to support durationsFormat().
+
+        // outputTypes is an array of moment token types that determines
+        // the tokens returned in formatted output. This option overrides
+        // trim, largest, stopTrim, etc.
+        var outputTypes = settings.outputTypes;
+
+        // returnMomentTypes is a boolean that sets durationFormat to return
+        // the processed momentTypes instead of formatted output.
+        var returnMomentTypes = settings.returnMomentTypes;
+
+        var largest = settings.largest;
+
+        // Setup stopTrim array of token types.
+        var stopTrim = [];
+
+        if (!outputTypes) {
+            if (isArray(settings.stopTrim)) {
+                settings.stopTrim = settings.stopTrim.join("");
+            }
+
+            // Parse stopTrim string to create token types array.
+            if (settings.stopTrim) {
+                each(settings.stopTrim.match(tokenizer), function (token) {
+                    var type = typeMap(token);
+
+                    if (type === "escape" || type === "general") {
+                        return;
+                    }
+
+                    stopTrim.push(type);
+                });
+            }
+        }
+
+        // Cache moment's locale data.
+        var localeData = moment.localeData();
+
+        if (!localeData) {
+            localeData = {};
+        }
+
+        // Fall back to this plugin's `eng` extension.
+        each(keys(engLocale), function (key) {
+            if (typeof engLocale[key] === "function") {
+                if (!localeData[key]) {
+                    localeData[key] = engLocale[key];
+                }
+
+                return;
+            }
+
+            if (!localeData["_" + key]) {
+                localeData["_" + key] = engLocale[key];
+            }
+        });
+
+        // Replace Duration Time Template strings.
+        // For locale `eng`: `_HMS_`, `_HM_`, and `_MS_`.
+        each(keys(localeData._durationTimeTemplates), function (item) {
+            template = template.replace("_" + item + "_", localeData._durationTimeTemplates[item]);
+        });
+
+        // Determine user's locale.
+        var userLocale = settings.userLocale || moment.locale();
+
+        var useLeftUnits = settings.useLeftUnits;
+        var usePlural = settings.usePlural;
+        var precision = settings.precision;
+        var forceLength = settings.forceLength;
+        var useGrouping = settings.useGrouping;
+        var trunc = settings.trunc;
+
+        // Use significant digits only when precision is greater than 0.
+        var useSignificantDigits = settings.useSignificantDigits && precision > 0;
+        var significantDigits = useSignificantDigits ? settings.precision : 0;
+        var significantDigitsCache = significantDigits;
+
+        var minValue = settings.minValue;
+        var isMinValue = false;
+
+        var maxValue = settings.maxValue;
+        var isMaxValue = false;
+
+        // formatNumber fallback options.
+        var useToLocaleString = settings.useToLocaleString;
+        var groupingSeparator = settings.groupingSeparator;
+        var decimalSeparator = settings.decimalSeparator;
+        var grouping = settings.grouping;
+
+        useToLocaleString = useToLocaleString && (toLocaleStringWorks || intlNumberFormatWorks);
+
+        // Trim options.
+        var trim = settings.trim;
+
+        if (isArray(trim)) {
+            trim = trim.join(" ");
+        }
+
+        if (trim === null && (largest || maxValue || useSignificantDigits)) {
+            trim = "all";
+        }
+
+        if (trim === null || trim === true || trim === "left" || trim === "right") {
+            trim = "large";
+        }
+
+        if (trim === false) {
+            trim = "";
+        }
+
+        var trimIncludes = function (item) {
+            return item.test(trim);
+        };
+
+        var rLarge = /large/;
+        var rSmall = /small/;
+        var rBoth = /both/;
+        var rMid = /mid/;
+        var rAll = /^all|[^sm]all/;
+        var rFinal = /final/;
+
+        var trimLarge = largest > 0 || any([rLarge, rBoth, rAll], trimIncludes);
+        var trimSmall = any([rSmall, rBoth, rAll], trimIncludes);
+        var trimMid = any([rMid, rAll], trimIncludes);
+        var trimFinal = any([rFinal, rAll], trimIncludes);
+
+        // Parse format string to create raw tokens array.
+        var rawTokens = map(template.match(tokenizer), function (token, index) {
+            var type = typeMap(token);
+
+            if (token.slice(0, 1) === "*") {
+                token = token.slice(1);
+
+                if (type !== "escape" && type !== "general") {
+                    stopTrim.push(type);
+                }
+            }
+
+            return {
+                index: index,
+                length: token.length,
+                text: "",
+
+                // Replace escaped tokens with the non-escaped token text.
+                token: (type === "escape" ? token.replace(tokenDefs.escape, "$1") : token),
+
+                // Ignore type on non-moment tokens.
+                type: ((type === "escape" || type === "general") ? null : type)
+            };
+        });
+
+        // Associate text tokens with moment tokens.
+        var currentToken = {
+            index: 0,
+            length: 0,
+            token: "",
+            text: "",
+            type: null
+        };
+
+        var tokens = [];
+
+        if (useLeftUnits) {
+            rawTokens.reverse();
+        }
+
+        each(rawTokens, function (token) {
+            if (token.type) {
+                if (currentToken.type || currentToken.text) {
+                    tokens.push(currentToken);
+                }
+
+                currentToken = token;
+
+                return;
+            }
+
+            if (useLeftUnits) {
+                currentToken.text = token.token + currentToken.text;
+            } else {
+                currentToken.text += token.token;
+            }
+        });
+
+        if (currentToken.type || currentToken.text) {
+            tokens.push(currentToken);
+        }
+
+        if (useLeftUnits) {
+            tokens.reverse();
+        }
+
+        // Find unique moment token types in the template in order of
+        // descending magnitude.
+        var momentTypes = intersection(types, unique(compact(pluck(tokens, "type"))));
+
+        // Exit early if there are no moment token types.
+        if (!momentTypes.length) {
+            return pluck(tokens, "text").join("");
+        }
+
+        // Calculate values for each moment type in the template.
+        // For processing the settings, values are associated with moment types.
+        // Values will be assigned to tokens at the last step in order to
+        // assume nothing about frequency or order of tokens in the template.
+        momentTypes = map(momentTypes, function (momentType, index) {
+            // Is this the least-magnitude moment token found?
+            var isSmallest = ((index + 1) === momentTypes.length);
+
+            // Is this the greatest-magnitude moment token found?
+            var isLargest = (!index);
+
+            // Get the raw value in the current units.
+            var rawValue;
+
+            if (momentType === "years" || momentType === "months") {
+                rawValue = remainderMonths.as(momentType);
+            } else {
+                rawValue = remainder.as(momentType);
+            }
+
+            var wholeValue = Math.floor(rawValue);
+            var decimalValue = rawValue - wholeValue;
+
+            var token = find(tokens, function (token) {
+                return momentType === token.type;
+            });
+
+            if (isLargest && maxValue && rawValue > maxValue) {
+                isMaxValue = true;
+            }
+
+            if (isSmallest && minValue && Math.abs(settings.duration.as(momentType)) < minValue) {
+                isMinValue = true;
+            }
+
+            // Note the length of the largest-magnitude moment token:
+            // if it is greater than one and forceLength is not set,
+            // then default forceLength to `true`.
+            //
+            // Rationale is this: If the template is "h:mm:ss" and the
+            // moment value is 5 minutes, the user-friendly output is
+            // "5:00", not "05:00". We shouldn't pad the `minutes` token
+            // even though it has length of two if the template is "h:mm:ss";
+            //
+            // If the minutes output should always include the leading zero
+            // even when the hour is trimmed then set `{ forceLength: true }`
+            // to output "05:00". If the template is "hh:mm:ss", the user
+            // clearly wanted everything padded so we should output "05:00";
+            //
+            // If the user wants the full padded output, they can use
+            // template "hh:mm:ss" and set `{ trim: false }` to output
+            // "00:05:00".
+            if (isLargest && forceLength === null && token.length > 1) {
+                forceLength = true;
+            }
+
+            // Update remainder.
+            remainder.subtract(wholeValue, momentType);
+            remainderMonths.subtract(wholeValue, momentType);
+
+            return {
+                rawValue: rawValue,
+                wholeValue: wholeValue,
+                // Decimal value is only retained for the least-magnitude
+                // moment type in the format template.
+                decimalValue: isSmallest ? decimalValue : 0,
+                isSmallest: isSmallest,
+                isLargest: isLargest,
+                type: momentType,
+                // Tokens can appear multiple times in a template string,
+                // but all instances must share the same length.
+                tokenLength: token.length
+            };
+        });
+
+        var truncMethod = trunc ? Math.floor : Math.round;
+        var truncate = function (value, places) {
+            var factor = Math.pow(10, places);
+            return truncMethod(value * factor) / factor;
+        };
+
+        var foundFirst = false;
+        var bubbled = false;
+
+        var formatValue = function (momentType, index) {
+            var formatOptions = {
+                useGrouping: useGrouping,
+                groupingSeparator: groupingSeparator,
+                decimalSeparator: decimalSeparator,
+                grouping: grouping,
+                useToLocaleString: useToLocaleString
+            };
+
+            if (useSignificantDigits) {
+                if (significantDigits <= 0) {
+                    momentType.rawValue = 0;
+                    momentType.wholeValue = 0;
+                    momentType.decimalValue = 0;
+                } else {
+                    formatOptions.maximumSignificantDigits = significantDigits;
+                    momentType.significantDigits = significantDigits;
+                }
+            }
+
+            if (isMaxValue && !bubbled) {
+                if (momentType.isLargest) {
+                    momentType.wholeValue = maxValue;
+                    momentType.decimalValue = 0;
+                } else {
+                    momentType.wholeValue = 0;
+                    momentType.decimalValue = 0;
+                }
+            }
+
+            if (isMinValue && !bubbled) {
+                if (momentType.isSmallest) {
+                    momentType.wholeValue = minValue;
+                    momentType.decimalValue = 0;
+                } else {
+                    momentType.wholeValue = 0;
+                    momentType.decimalValue = 0;
+                }
+            }
+
+            if (momentType.isSmallest || momentType.significantDigits && momentType.significantDigits - momentType.wholeValue.toString().length <= 0) {
+                // Apply precision to least significant token value.
+                if (precision < 0) {
+                    momentType.value = truncate(momentType.wholeValue, precision);
+                } else if (precision === 0) {
+                    momentType.value = truncMethod(momentType.wholeValue + momentType.decimalValue);
+                } else { // precision > 0
+                    if (useSignificantDigits) {
+                        if (trunc) {
+                            momentType.value = truncate(momentType.rawValue, significantDigits - momentType.wholeValue.toString().length);
+                        } else {
+                            momentType.value = momentType.rawValue;
+                        }
+
+                        if (momentType.wholeValue) {
+                            significantDigits -= momentType.wholeValue.toString().length;
+                        }
+                    } else {
+                        formatOptions.fractionDigits = precision;
+
+                        if (trunc) {
+                            momentType.value = momentType.wholeValue + truncate(momentType.decimalValue, precision);
+                        } else {
+                            momentType.value = momentType.wholeValue + momentType.decimalValue;
+                        }
+                    }
+                }
+            } else {
+                if (useSignificantDigits && momentType.wholeValue) {
+                    // Outer Math.round required here to handle floating point errors.
+                    momentType.value = Math.round(truncate(momentType.wholeValue, momentType.significantDigits - momentType.wholeValue.toString().length));
+
+                    significantDigits -= momentType.wholeValue.toString().length;
+                } else {
+                    momentType.value = momentType.wholeValue;
+                }
+            }
+
+            if (momentType.tokenLength > 1 && (forceLength || foundFirst)) {
+                formatOptions.minimumIntegerDigits = momentType.tokenLength;
+
+                if (bubbled && formatOptions.maximumSignificantDigits < momentType.tokenLength) {
+                    delete formatOptions.maximumSignificantDigits;
+                }
+            }
+
+            if (!foundFirst && (momentType.value > 0 || trim === "" /* trim: false */ || find(stopTrim, momentType.type) || find(outputTypes, momentType.type))) {
+                foundFirst = true;
+            }
+
+            momentType.formattedValue = formatNumber(momentType.value, formatOptions, userLocale);
+
+            formatOptions.useGrouping = false;
+            formatOptions.decimalSeparator = ".";
+            momentType.formattedValueEn = formatNumber(momentType.value, formatOptions, "en");
+
+            if (momentType.tokenLength === 2 && momentType.type === "milliseconds") {
+                momentType.formattedValueMS = formatNumber(momentType.value, {
+                    minimumIntegerDigits: 3,
+                    useGrouping: false
+                }, "en").slice(0, 2);
+            }
+
+            return momentType;
+        };
+
+        // Calculate formatted values.
+        momentTypes = map(momentTypes, formatValue);
+        momentTypes = compact(momentTypes);
+
+        // Bubble rounded values.
+        if (momentTypes.length > 1) {
+            var findType = function (type) {
+                return find(momentTypes, function (momentType) {
+                    return momentType.type === type;
+                });
+            };
+
+            var bubbleTypes = function (bubble) {
+                var bubbleMomentType = findType(bubble.type);
+
+                if (!bubbleMomentType) {
+                    return;
+                }
+
+                each(bubble.targets, function (target) {
+                    var targetMomentType = findType(target.type);
+
+                    if (!targetMomentType) {
+                        return;
+                    }
+
+                    if (parseInt(bubbleMomentType.formattedValueEn, 10) === target.value) {
+                        bubbleMomentType.rawValue = 0;
+                        bubbleMomentType.wholeValue = 0;
+                        bubbleMomentType.decimalValue = 0;
+                        targetMomentType.rawValue += 1;
+                        targetMomentType.wholeValue += 1;
+                        targetMomentType.decimalValue = 0;
+                        targetMomentType.formattedValueEn = targetMomentType.wholeValue.toString();
+                        bubbled = true;
+                    }
+                });
+            };
+
+            each(bubbles, bubbleTypes);
+        }
+
+        // Recalculate formatted values.
+        if (bubbled) {
+            foundFirst = false;
+            significantDigits = significantDigitsCache;
+            momentTypes = map(momentTypes, formatValue);
+            momentTypes = compact(momentTypes);
+        }
+
+        if (outputTypes && !(isMaxValue && !settings.trim)) {
+            momentTypes = map(momentTypes, function (momentType) {
+                if (find(outputTypes, function (outputType) {
+                    return momentType.type === outputType;
+                })) {
+                    return momentType;
+                }
+
+                return null;
+            });
+
+            momentTypes = compact(momentTypes);
+        } else {
+            // Trim Large.
+            if (trimLarge) {
+                momentTypes = rest(momentTypes, function (momentType) {
+                    // Stop trimming on:
+                    // - the smallest moment type
+                    // - a type marked for stopTrim
+                    // - a type that has a whole value
+                    return !momentType.isSmallest && !momentType.wholeValue && !find(stopTrim, momentType.type);
+                });
+            }
+
+            // Largest.
+            if (largest && momentTypes.length) {
+                momentTypes = momentTypes.slice(0, largest);
+            }
+
+            // Trim Small.
+            if (trimSmall && momentTypes.length > 1) {
+                momentTypes = initial(momentTypes, function (momentType) {
+                    // Stop trimming on:
+                    // - a type marked for stopTrim
+                    // - a type that has a whole value
+                    // - the largest momentType
+                    return !momentType.wholeValue && !find(stopTrim, momentType.type) && !momentType.isLargest;
+                });
+            }
+
+            // Trim Mid.
+            if (trimMid) {
+                momentTypes = map(momentTypes, function (momentType, index) {
+                    if (index > 0 && index < momentTypes.length - 1 && !momentType.wholeValue) {
+                        return null;
+                    }
+
+                    return momentType;
+                });
+
+                momentTypes = compact(momentTypes);
+            }
+
+            // Trim Final.
+            if (trimFinal && momentTypes.length === 1 && !momentTypes[0].wholeValue && !(!trunc && momentTypes[0].isSmallest && momentTypes[0].rawValue < minValue)) {
+                momentTypes = [];
+            }
+        }
+
+        if (returnMomentTypes) {
+            return momentTypes;
+        }
+
+        // Localize and pluralize unit labels.
+        each(tokens, function (token) {
+            var key = momentTokens[token.type];
+
+            var momentType = find(momentTypes, function (momentType) {
+                return momentType.type === token.type;
+            });
+
+            if (!key || !momentType) {
+                return;
+            }
+
+            var values = momentType.formattedValueEn.split(".");
+
+            values[0] = parseInt(values[0], 10);
+
+            if (values[1]) {
+                values[1] = parseFloat("0." + values[1], 10);
+            } else {
+                values[1] = null;
+            }
+
+            var pluralKey = localeData.durationPluralKey(key, values[0], values[1]);
+
+            var labels = durationGetLabels(key, localeData);
+
+            var autoLocalized = false;
+
+            var pluralizedLabels = {};
+
+            // Auto-Localized unit labels.
+            each(localeData._durationLabelTypes, function (labelType) {
+                var label = find(labels, function (label) {
+                    return label.type === labelType.type && label.key === pluralKey;
+                });
+
+                if (label) {
+                    pluralizedLabels[label.type] = label.label;
+
+                    if (stringIncludes(token.text, labelType.string)) {
+                        token.text = token.text.replace(labelType.string, label.label);
+                        autoLocalized = true;
+                    }
+                }
+            });
+
+            // Auto-pluralized unit labels.
+            if (usePlural && !autoLocalized) {
+                labels.sort(durationLabelCompare);
+
+                each(labels, function (label) {
+                    if (pluralizedLabels[label.type] === label.label) {
+                        if (stringIncludes(token.text, label.label)) {
+                            // Stop checking this token if its label is already
+                            // correctly pluralized.
+                            return false;
+                        }
+
+                        // Skip this label if it is correct, but not present in
+                        // the token's text.
+                        return;
+                    }
+
+                    if (stringIncludes(token.text, label.label)) {
+                        // Replece this token's label and stop checking.
+                        token.text = token.text.replace(label.label, pluralizedLabels[label.type]);
+                        return false;
+                    }
+                });
+            }
+        });
+
+        // Build ouptut.
+        tokens = map(tokens, function (token) {
+            if (!token.type) {
+                return token.text;
+            }
+
+            var momentType = find(momentTypes, function (momentType) {
+                return momentType.type === token.type;
+            });
+
+            if (!momentType) {
+                return "";
+            }
+
+            var out = "";
+
+            if (useLeftUnits) {
+                out += token.text;
+            }
+
+            if (isNegative && isMaxValue || !isNegative && isMinValue) {
+                out += "< ";
+                isMaxValue = false;
+                isMinValue = false;
+            }
+
+            if (isNegative && isMinValue || !isNegative && isMaxValue) {
+                out += "> ";
+                isMaxValue = false;
+                isMinValue = false;
+            }
+
+            if (isNegative && (momentType.value > 0 || trim === "" || find(stopTrim, momentType.type) || find(outputTypes, momentType.type))) {
+                out += "-";
+                isNegative = false;
+            }
+
+            if (token.type === "milliseconds" && momentType.formattedValueMS) {
+                out += momentType.formattedValueMS;
+            } else {
+                out += momentType.formattedValue;
+            }
+
+            if (!useLeftUnits) {
+                out += token.text;
+            }
+
+            return out;
+        });
+
+        // Trim leading and trailing comma, space, colon, and dot.
+        return tokens.join("").replace(/(,| |:|\.)*$/, "").replace(/^(,| |:|\.)*/, "");
+    }
+
+    // defaultFormatTemplate
+    function defaultFormatTemplate() {
+        var dur = this.duration;
+
+        var findType = function findType(type) {
+            return dur._data[type];
+        };
+
+        var firstType = find(this.types, findType);
+
+        var lastType = findLast(this.types, findType);
+
+        // Default template strings for each duration dimension type.
+        switch (firstType) {
+            case "milliseconds":
+                return "S __";
+            case "seconds": // Fallthrough.
+            case "minutes":
+                return "*_MS_";
+            case "hours":
+                return "_HMS_";
+            case "days": // Possible Fallthrough.
+                if (firstType === lastType) {
+                    return "d __";
+                }
+            case "weeks":
+                if (firstType === lastType) {
+                    return "w __";
+                }
+
+                if (this.trim === null) {
+                    this.trim = "both";
+                }
+
+                return "w __, d __, h __";
+            case "months": // Possible Fallthrough.
+                if (firstType === lastType) {
+                    return "M __";
+                }
+            case "years":
+                if (firstType === lastType) {
+                    return "y __";
+                }
+
+                if (this.trim === null) {
+                    this.trim = "both";
+                }
+
+                return "y __, M __, d __";
+            default:
+                if (this.trim === null) {
+                    this.trim = "both";
+                }
+
+                return "y __, d __, h __, m __, s __";
+        }
+    }
+
+    // init
+    function init(context) {
+        if (!context) {
+            throw "Moment Duration Format init cannot find moment instance.";
+        }
+
+        context.duration.format = durationsFormat;
+        context.duration.fn.format = durationFormat;
+
+        context.duration.fn.format.defaults = {
+            // Many options are defaulted to `null` to distinguish between
+            // 'not set' and 'set to `false`'
+
+            // trim
+            // Can be a string, a delimited list of strings, an array of strings,
+            // or a boolean.
+            // "large" - will trim largest-magnitude zero-value tokens until
+            // finding a token with a value, a token identified as 'stopTrim', or
+            // the final token of the format string.
+            // "small" - will trim smallest-magnitude zero-value tokens until
+            // finding a token with a value, a token identified as 'stopTrim', or
+            // the final token of the format string.
+            // "both" - will execute "large" trim then "small" trim.
+            // "mid" - will trim any zero-value tokens that are not the first or
+            // last tokens. Usually used in conjunction with "large" or "both".
+            // e.g. "large mid" or "both mid".
+            // "final" - will trim the final token if it is zero-value. Use this
+            // option with "large" or "both" to output an empty string when
+            // formatting a zero-value duration. e.g. "large final" or "both final".
+            // "all" - Will trim all zero-value tokens. Shorthand for "both mid final".
+            // "left" - maps to "large" to support plugin's version 1 API.
+            // "right" - maps to "large" to support plugin's version 1 API.
+            // `false` - template tokens are not trimmed.
+            // `true` - treated as "large".
+            // `null` - treated as "large".
+            trim: null,
+
+            // stopTrim
+            // A moment token string, a delimited set of moment token strings,
+            // or an array of moment token strings. Trimming will stop when a token
+            // listed in this option is reached. A "*" character in the format
+            // template string will also mark a moment token as stopTrim.
+            // e.g. "d [days] *h:mm:ss" will always stop trimming at the 'hours' token.
+            stopTrim: null,
+
+            // largest
+            // Set to a positive integer to output only the "n" largest-magnitude
+            // moment tokens that have a value. All lesser-magnitude moment tokens
+            // will be ignored. This option takes effect even if `trim` is set
+            // to `false`.
+            largest: null,
+
+            // maxValue
+            // Use `maxValue` to render generalized output for large duration values,
+            // e.g. `"> 60 days"`. `maxValue` must be a positive integer and is
+            /// applied to the greatest-magnitude moment token in the format template.
+            maxValue: null,
+
+            // minValue
+            // Use `minValue` to render generalized output for small duration values,
+            // e.g. `"< 5 minutes"`. `minValue` must be a positive integer and is
+            // applied to the least-magnitude moment token in the format template.
+            minValue: null,
+
+            // precision
+            // If a positive integer, number of decimal fraction digits to render.
+            // If a negative integer, number of integer place digits to truncate to 0.
+            // If `useSignificantDigits` is set to `true` and `precision` is a positive
+            // integer, sets the maximum number of significant digits used in the
+            // formatted output.
+            precision: 0,
+
+            // trunc
+            // Default behavior rounds final token value. Set to `true` to
+            // truncate final token value, which was the default behavior in
+            // version 1 of this plugin.
+            trunc: false,
+
+            // forceLength
+            // Force first moment token with a value to render at full length
+            // even when template is trimmed and first moment token has length of 1.
+            forceLength: null,
+
+            // userLocale
+            // Formatted numerical output is rendered using `toLocaleString`
+            // and the locale of the user's environment. Set this option to render
+            // numerical output using a different locale. Unit names are rendered
+            // and detected using the locale set in moment.js, which can be different
+            // from the locale of user's environment.
+            userLocale: null,
+
+            // usePlural
+            // Will automatically singularize or pluralize unit names when they
+            // appear in the text associated with each moment token. Standard and
+            // short unit labels are singularized and pluralized, based on locale.
+            // e.g. in english, "1 second" or "1 sec" would be rendered instead
+            // of "1 seconds" or "1 secs". The default pluralization function
+            // renders a plural label for a value with decimal precision.
+            // e.g. "1.0 seconds" is never rendered as "1.0 second".
+            // Label types and pluralization function are configurable in the
+            // localeData extensions.
+            usePlural: true,
+
+            // useLeftUnits
+            // The text to the right of each moment token in a format string
+            // is treated as that token's units for the purposes of trimming,
+            // singularizing, and auto-localizing.
+            // e.g. "h [hours], m [minutes], s [seconds]".
+            // To properly singularize or localize a format string such as
+            // "[hours] h, [minutes] m, [seconds] s", where the units appear
+            // to the left of each moment token, set useLeftUnits to `true`.
+            // This plugin is not tested in the context of rtl text.
+            useLeftUnits: false,
+
+            // useGrouping
+            // Enables locale-based digit grouping in the formatted output. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
+            useGrouping: true,
+
+            // useSignificantDigits
+            // Treat the `precision` option as the maximum significant digits
+            // to be rendered. Precision must be a positive integer. Significant
+            // digits extend across unit types,
+            // e.g. "6 hours 37.5 minutes" represents 4 significant digits.
+            // Enabling this option causes token length to be ignored. See  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
+            useSignificantDigits: false,
+
+            // template
+            // The template string used to format the duration. May be a function
+            // or a string. Template functions are executed with the `this` binding
+            // of the settings object so that template strings may be dynamically
+            // generated based on the duration object (accessible via `this.duration`)
+            // or any of the other settings. Leading and trailing space, comma,
+            // period, and colon characters are trimmed from the resulting string.
+            template: defaultFormatTemplate,
+
+            // useToLocaleString
+            // Set this option to `false` to ignore the `toLocaleString` feature
+            // test and force the use of the `formatNumber` fallback function
+            // included in this plugin.
+            useToLocaleString: true,
+
+            // formatNumber fallback options.
+            // When `toLocaleString` is detected and passes the feature test, the
+            // following options will have no effect: `toLocaleString` will be used
+            // for formatting and the grouping separator, decimal separator, and
+            // integer digit grouping will be determined by the user locale.
+
+            // groupingSeparator
+            // The integer digit grouping separator used when using the fallback
+            // formatNumber function.
+            groupingSeparator: ",",
+
+            // decimalSeparator
+            // The decimal separator used when using the fallback formatNumber
+            // function.
+            decimalSeparator: ".",
+
+            // grouping
+            // The integer digit grouping used when using the fallback formatNumber
+            // function. Must be an array. The default value of `[3]` gives the
+            // standard 3-digit thousand/million/billion digit groupings for the
+            // "en" locale. Setting this option to `[3, 2]` would generate the
+            // thousand/lakh/crore digit groupings used in the "en-IN" locale.
+            grouping: [3]
+        };
+
+        context.updateLocale('en', engLocale);
+    }
+
+    // Run feature tests for `Number#toLocaleString`.
+    var toLocaleStringFormatter = function(number, locale, options) {
+        return number.toLocaleString(locale, options);
+    };
+
+    toLocaleStringWorks = toLocaleStringSupportsLocales() && featureTestFormatter(toLocaleStringFormatter);
+    toLocaleStringRoundingWorks = toLocaleStringWorks && featureTestFormatterRounding(toLocaleStringFormatter);
+
+    // Run feature tests for `Intl.NumberFormat#format`.
+    var intlNumberFormatFormatter = function(number, locale, options) {
+        if (typeof window !== 'undefined' && window && window.Intl && window.Intl.NumberFormat) {
+            return window.Intl.NumberFormat(locale, options).format(number);
+        }
+    };
+
+    intlNumberFormatWorks = featureTestFormatter(intlNumberFormatFormatter);
+    intlNumberFormatRoundingWorks = intlNumberFormatWorks && featureTestFormatterRounding(intlNumberFormatFormatter);
+
+    // Initialize duration format on the global moment instance.
+    init(moment);
+
+    // Return the init function so that duration format can be
+    // initialized on other moment instances.
+    return init;
+});
+
+
+/***/ }),
+
 /***/ "./node_modules/moment/locale sync recursive ^\\.\\/.*$":
 /*!**************************************************!*\
   !*** ./node_modules/moment/locale sync ^\.\/.*$ ***!
@@ -68595,6 +70521,36 @@ function simpleEnd(buf) {
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MasterComponent.vue?vue&type=style&index=0&lang=css&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MasterComponent.vue?vue&type=style&index=0&lang=css& ***!
@@ -75120,6 +77076,429 @@ module.exports.stringify = stringify;
 
 /***/ }),
 
+/***/ "./node_modules/uuid/lib/bytesToUuid.js":
+/*!**********************************************!*\
+  !*** ./node_modules/uuid/lib/bytesToUuid.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+var byteToHex = [];
+for (var i = 0; i < 256; ++i) {
+  byteToHex[i] = (i + 0x100).toString(16).substr(1);
+}
+
+function bytesToUuid(buf, offset) {
+  var i = offset || 0;
+  var bth = byteToHex;
+  // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
+  return ([bth[buf[i++]], bth[buf[i++]], 
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]],
+	bth[buf[i++]], bth[buf[i++]],
+	bth[buf[i++]], bth[buf[i++]]]).join('');
+}
+
+module.exports = bytesToUuid;
+
+
+/***/ }),
+
+/***/ "./node_modules/uuid/lib/rng-browser.js":
+/*!**********************************************!*\
+  !*** ./node_modules/uuid/lib/rng-browser.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// Unique ID creation requires a high quality random # generator.  In the
+// browser this is a little complicated due to unknown quality of Math.random()
+// and inconsistent support for the `crypto` API.  We do the best we can via
+// feature-detection
+
+// getRandomValues needs to be invoked in a context where "this" is a Crypto
+// implementation. Also, find the complete implementation of crypto on IE11.
+var getRandomValues = (typeof(crypto) != 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto)) ||
+                      (typeof(msCrypto) != 'undefined' && typeof window.msCrypto.getRandomValues == 'function' && msCrypto.getRandomValues.bind(msCrypto));
+
+if (getRandomValues) {
+  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
+  var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
+
+  module.exports = function whatwgRNG() {
+    getRandomValues(rnds8);
+    return rnds8;
+  };
+} else {
+  // Math.random()-based (RNG)
+  //
+  // If all else fails, use Math.random().  It's fast, but is of unspecified
+  // quality.
+  var rnds = new Array(16);
+
+  module.exports = function mathRNG() {
+    for (var i = 0, r; i < 16; i++) {
+      if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+      rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+    }
+
+    return rnds;
+  };
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/uuid/lib/sha1-browser.js":
+/*!***********************************************!*\
+  !*** ./node_modules/uuid/lib/sha1-browser.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Adapted from Chris Veness' SHA1 code at
+// http://www.movable-type.co.uk/scripts/sha1.html
+
+
+function f(s, x, y, z) {
+  switch (s) {
+    case 0: return (x & y) ^ (~x & z);
+    case 1: return x ^ y ^ z;
+    case 2: return (x & y) ^ (x & z) ^ (y & z);
+    case 3: return x ^ y ^ z;
+  }
+}
+
+function ROTL(x, n) {
+  return (x << n) | (x>>> (32 - n));
+}
+
+function sha1(bytes) {
+  var K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6];
+  var H = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0];
+
+  if (typeof(bytes) == 'string') {
+    var msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
+    bytes = new Array(msg.length);
+    for (var i = 0; i < msg.length; i++) bytes[i] = msg.charCodeAt(i);
+  }
+
+  bytes.push(0x80);
+
+  var l = bytes.length/4 + 2;
+  var N = Math.ceil(l/16);
+  var M = new Array(N);
+
+  for (var i=0; i<N; i++) {
+    M[i] = new Array(16);
+    for (var j=0; j<16; j++) {
+      M[i][j] =
+        bytes[i * 64 + j * 4] << 24 |
+        bytes[i * 64 + j * 4 + 1] << 16 |
+        bytes[i * 64 + j * 4 + 2] << 8 |
+        bytes[i * 64 + j * 4 + 3];
+    }
+  }
+
+  M[N - 1][14] = ((bytes.length - 1) * 8) /
+    Math.pow(2, 32); M[N - 1][14] = Math.floor(M[N - 1][14]);
+  M[N - 1][15] = ((bytes.length - 1) * 8) & 0xffffffff;
+
+  for (var i=0; i<N; i++) {
+    var W = new Array(80);
+
+    for (var t=0; t<16; t++) W[t] = M[i][t];
+    for (var t=16; t<80; t++) {
+      W[t] = ROTL(W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16], 1);
+    }
+
+    var a = H[0];
+    var b = H[1];
+    var c = H[2];
+    var d = H[3];
+    var e = H[4];
+
+    for (var t=0; t<80; t++) {
+      var s = Math.floor(t/20);
+      var T = ROTL(a, 5) + f(s, b, c, d) + e + K[s] + W[t] >>> 0;
+      e = d;
+      d = c;
+      c = ROTL(b, 30) >>> 0;
+      b = a;
+      a = T;
+    }
+
+    H[0] = (H[0] + a) >>> 0;
+    H[1] = (H[1] + b) >>> 0;
+    H[2] = (H[2] + c) >>> 0;
+    H[3] = (H[3] + d) >>> 0;
+    H[4] = (H[4] + e) >>> 0;
+  }
+
+  return [
+    H[0] >> 24 & 0xff, H[0] >> 16 & 0xff, H[0] >> 8 & 0xff, H[0] & 0xff,
+    H[1] >> 24 & 0xff, H[1] >> 16 & 0xff, H[1] >> 8 & 0xff, H[1] & 0xff,
+    H[2] >> 24 & 0xff, H[2] >> 16 & 0xff, H[2] >> 8 & 0xff, H[2] & 0xff,
+    H[3] >> 24 & 0xff, H[3] >> 16 & 0xff, H[3] >> 8 & 0xff, H[3] & 0xff,
+    H[4] >> 24 & 0xff, H[4] >> 16 & 0xff, H[4] >> 8 & 0xff, H[4] & 0xff
+  ];
+}
+
+module.exports = sha1;
+
+
+/***/ }),
+
+/***/ "./node_modules/uuid/lib/v35.js":
+/*!**************************************!*\
+  !*** ./node_modules/uuid/lib/v35.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var bytesToUuid = __webpack_require__(/*! ./bytesToUuid */ "./node_modules/uuid/lib/bytesToUuid.js");
+
+function uuidToBytes(uuid) {
+  // Note: We assume we're being passed a valid uuid string
+  var bytes = [];
+  uuid.replace(/[a-fA-F0-9]{2}/g, function(hex) {
+    bytes.push(parseInt(hex, 16));
+  });
+
+  return bytes;
+}
+
+function stringToBytes(str) {
+  str = unescape(encodeURIComponent(str)); // UTF8 escape
+  var bytes = new Array(str.length);
+  for (var i = 0; i < str.length; i++) {
+    bytes[i] = str.charCodeAt(i);
+  }
+  return bytes;
+}
+
+module.exports = function(name, version, hashfunc) {
+  var generateUUID = function(value, namespace, buf, offset) {
+    var off = buf && offset || 0;
+
+    if (typeof(value) == 'string') value = stringToBytes(value);
+    if (typeof(namespace) == 'string') namespace = uuidToBytes(namespace);
+
+    if (!Array.isArray(value)) throw TypeError('value must be an array of bytes');
+    if (!Array.isArray(namespace) || namespace.length !== 16) throw TypeError('namespace must be uuid string or an Array of 16 byte values');
+
+    // Per 4.3
+    var bytes = hashfunc(namespace.concat(value));
+    bytes[6] = (bytes[6] & 0x0f) | version;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+    if (buf) {
+      for (var idx = 0; idx < 16; ++idx) {
+        buf[off+idx] = bytes[idx];
+      }
+    }
+
+    return buf || bytesToUuid(bytes);
+  };
+
+  // Function#name is not settable on some platforms (#270)
+  try {
+    generateUUID.name = name;
+  } catch (err) {
+  }
+
+  // Pre-defined namespaces, per Appendix C
+  generateUUID.DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+  generateUUID.URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+
+  return generateUUID;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/uuid/v1.js":
+/*!*********************************!*\
+  !*** ./node_modules/uuid/v1.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var rng = __webpack_require__(/*! ./lib/rng */ "./node_modules/uuid/lib/rng-browser.js");
+var bytesToUuid = __webpack_require__(/*! ./lib/bytesToUuid */ "./node_modules/uuid/lib/bytesToUuid.js");
+
+// **`v1()` - Generate time-based UUID**
+//
+// Inspired by https://github.com/LiosK/UUID.js
+// and http://docs.python.org/library/uuid.html
+
+var _nodeId;
+var _clockseq;
+
+// Previous uuid creation time
+var _lastMSecs = 0;
+var _lastNSecs = 0;
+
+// See https://github.com/broofa/node-uuid for API details
+function v1(options, buf, offset) {
+  var i = buf && offset || 0;
+  var b = buf || [];
+
+  options = options || {};
+  var node = options.node || _nodeId;
+  var clockseq = options.clockseq !== undefined ? options.clockseq : _clockseq;
+
+  // node and clockseq need to be initialized to random values if they're not
+  // specified.  We do this lazily to minimize issues related to insufficient
+  // system entropy.  See #189
+  if (node == null || clockseq == null) {
+    var seedBytes = rng();
+    if (node == null) {
+      // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+      node = _nodeId = [
+        seedBytes[0] | 0x01,
+        seedBytes[1], seedBytes[2], seedBytes[3], seedBytes[4], seedBytes[5]
+      ];
+    }
+    if (clockseq == null) {
+      // Per 4.2.2, randomize (14 bit) clockseq
+      clockseq = _clockseq = (seedBytes[6] << 8 | seedBytes[7]) & 0x3fff;
+    }
+  }
+
+  // UUID timestamps are 100 nano-second units since the Gregorian epoch,
+  // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
+  // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
+  // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
+  var msecs = options.msecs !== undefined ? options.msecs : new Date().getTime();
+
+  // Per 4.2.1.2, use count of uuid's generated during the current clock
+  // cycle to simulate higher resolution clock
+  var nsecs = options.nsecs !== undefined ? options.nsecs : _lastNSecs + 1;
+
+  // Time since last uuid creation (in msecs)
+  var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
+
+  // Per 4.2.1.2, Bump clockseq on clock regression
+  if (dt < 0 && options.clockseq === undefined) {
+    clockseq = clockseq + 1 & 0x3fff;
+  }
+
+  // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
+  // time interval
+  if ((dt < 0 || msecs > _lastMSecs) && options.nsecs === undefined) {
+    nsecs = 0;
+  }
+
+  // Per 4.2.1.2 Throw error if too many uuids are requested
+  if (nsecs >= 10000) {
+    throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
+  }
+
+  _lastMSecs = msecs;
+  _lastNSecs = nsecs;
+  _clockseq = clockseq;
+
+  // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
+  msecs += 12219292800000;
+
+  // `time_low`
+  var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+  b[i++] = tl >>> 24 & 0xff;
+  b[i++] = tl >>> 16 & 0xff;
+  b[i++] = tl >>> 8 & 0xff;
+  b[i++] = tl & 0xff;
+
+  // `time_mid`
+  var tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
+  b[i++] = tmh >>> 8 & 0xff;
+  b[i++] = tmh & 0xff;
+
+  // `time_high_and_version`
+  b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
+  b[i++] = tmh >>> 16 & 0xff;
+
+  // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
+  b[i++] = clockseq >>> 8 | 0x80;
+
+  // `clock_seq_low`
+  b[i++] = clockseq & 0xff;
+
+  // `node`
+  for (var n = 0; n < 6; ++n) {
+    b[i + n] = node[n];
+  }
+
+  return buf ? buf : bytesToUuid(b);
+}
+
+module.exports = v1;
+
+
+/***/ }),
+
+/***/ "./node_modules/uuid/v4.js":
+/*!*********************************!*\
+  !*** ./node_modules/uuid/v4.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var rng = __webpack_require__(/*! ./lib/rng */ "./node_modules/uuid/lib/rng-browser.js");
+var bytesToUuid = __webpack_require__(/*! ./lib/bytesToUuid */ "./node_modules/uuid/lib/bytesToUuid.js");
+
+function v4(options, buf, offset) {
+  var i = buf && offset || 0;
+
+  if (typeof(options) == 'string') {
+    buf = options === 'binary' ? new Array(16) : null;
+    options = null;
+  }
+  options = options || {};
+
+  var rnds = options.random || (options.rng || rng)();
+
+  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+  rnds[6] = (rnds[6] & 0x0f) | 0x40;
+  rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+  // Copy bytes to buffer, if provided
+  if (buf) {
+    for (var ii = 0; ii < 16; ++ii) {
+      buf[i + ii] = rnds[ii];
+    }
+  }
+
+  return buf || bytesToUuid(rnds);
+}
+
+module.exports = v4;
+
+
+/***/ }),
+
+/***/ "./node_modules/uuid/v5.js":
+/*!*********************************!*\
+  !*** ./node_modules/uuid/v5.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var v35 = __webpack_require__(/*! ./lib/v35.js */ "./node_modules/uuid/lib/v35.js");
+var sha1 = __webpack_require__(/*! ./lib/sha1 */ "./node_modules/uuid/lib/sha1-browser.js");
+module.exports = v35('v5', 0x50, sha1);
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CrearCanalComponent.vue?vue&type=template&id=1bf0d50e&":
 /*!**********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CrearCanalComponent.vue?vue&type=template&id=1bf0d50e& ***!
@@ -75158,28 +77537,12 @@ var render = function() {
                   _c("label", [_vm._v("Nombre del Canal")]),
                   _vm._v(" "),
                   _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.nombre_canal,
-                        expression: "nombre_canal"
-                      }
-                    ],
                     staticClass: "form-control",
                     attrs: {
                       type: "text",
+                      input: _vm.nombrarCanal,
                       required: "",
                       placeholder: "Ingresar nombre del canal"
-                    },
-                    domProps: { value: _vm.nombre_canal },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.nombre_canal = $event.target.value
-                      }
                     }
                   })
                 ]),
@@ -75314,6 +77677,30 @@ var render = function() {
                   _vm._v(
                     "\n                                    Cancelar\n                                "
                   )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.counter += 1
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                                    Add 1\n                                "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("p", [
+                  _vm._v(
+                    "The button above has been clicked " +
+                      _vm._s(_vm.counter) +
+                      " times."
+                  )
                 ])
               ])
             ])
@@ -75446,461 +77833,704 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "col-lg-4" }, [
-      _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-body" }, [
-          _c("form", { attrs: { action: "#" } }, [
-            _c("div", { staticClass: "form-group row" }, [
-              _c(
-                "label",
-                {
-                  staticClass: "col-sm-4 col-form-label",
-                  attrs: { for: "example-text-input" }
-                },
-                [_vm._v("Nombre")]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-sm-8" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.nombre_playlist,
-                      expression: "nombre_playlist"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: {
-                    type: "text",
-                    placeholder: "Lista de Reproducción",
-                    id: "example-text-input"
-                  },
-                  domProps: { value: _vm.nombre_playlist },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.nombre_playlist = $event.target.value
-                    }
-                  }
-                })
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group row" }, [
-              _c(
-                "label",
-                {
-                  staticClass: "col-sm-4 col-form-label",
-                  attrs: { for: "example-text-input" }
-                },
-                [_vm._v("Usuario")]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-sm-8" }, [
-                _c("div", { staticClass: "form-group" }, [
-                  _c(
-                    "select",
-                    {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.id_usuario,
-                          expression: "id_usuario"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.id_usuario = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
-                      }
-                    },
-                    [
-                      _c("option", { attrs: { value: "0", disabled: "" } }, [
-                        _vm._v("Seleccione")
-                      ]),
-                      _vm._v(" "),
-                      _vm._l(_vm.arrayUsers, function(usuarios) {
-                        return _c("option", {
-                          key: usuarios.id,
-                          domProps: {
-                            value: usuarios.id,
-                            textContent: _vm._s(usuarios.nombre_usuario)
-                          }
-                        })
-                      })
-                    ],
-                    2
-                  )
-                ])
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group row" }, [
-              _c(
-                "label",
-                {
-                  staticClass: "col-sm-4 col-form-label",
-                  attrs: { for: "example-text-input" }
-                },
-                [_vm._v("Canal")]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-sm-8" }, [
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.id_canal,
-                        expression: "id_canal"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.id_canal = $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      }
-                    }
-                  },
-                  [
-                    _c("option", { attrs: { value: "0", disabled: "" } }, [
-                      _vm._v("Seleccione")
-                    ]),
-                    _vm._v(" "),
-                    _vm._l(_vm.arrayCanales, function(canales) {
-                      return _c("option", {
-                        key: canales.id,
-                        domProps: {
-                          value: canales.id,
-                          textContent: _vm._s(canales.nombre_canal)
-                        }
-                      })
-                    })
-                  ],
-                  2
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group row" }, [
-              _c(
-                "label",
-                {
-                  staticClass: "col-sm-4 col-form-label",
-                  attrs: { for: "example-time-input" }
-                },
-                [_vm._v("Hora Inicio")]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-sm-8" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.hora_inicio,
-                      expression: "hora_inicio"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: {
-                    type: "time",
-                    step: "1",
-                    value: "13:45:00",
-                    id: "example-time-input"
-                  },
-                  domProps: { value: _vm.hora_inicio },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.hora_inicio = $event.target.value
-                    }
-                  }
-                })
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group row" }, [
-              _c(
-                "label",
-                {
-                  staticClass: "col-sm-4 col-form-label",
-                  attrs: { for: "example-date-input" }
-                },
-                [_vm._v("Emisión")]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-sm-8" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.fecha_emision,
-                      expression: "fecha_emision"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: {
-                    type: "date",
-                    value: "2011-08-19",
-                    id: "example-date-input"
-                  },
-                  domProps: { value: _vm.fecha_emision },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.fecha_emision = $event.target.value
-                    }
-                  }
-                })
-              ])
-            ]),
-            _vm._v(" "),
-            _vm._m(0)
-          ])
-        ])
-      ])
-    ]),
+  return _c("div", { staticClass: "page-title-box" }, [
+    _vm._m(0),
     _vm._v(" "),
-    _c("div", { staticClass: "col-lg-8" }, [
-      _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-body" }, [
-          _vm._m(1),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "table-wrapper-scroll-y my-custom-scrollbar" },
-            [
-              _c("table", { staticClass: "table table-sm m-0" }, [
-                _c("thead", [
-                  _c("tr", [
-                    _c("th", [_vm._v("Nombre Video")]),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-xl-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-lg-8" }, [
+                _c("form", { attrs: { action: "#" } }, [
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-4 col-form-label",
+                        attrs: { for: "example-text-input" }
+                      },
+                      [_vm._v("Nombre")]
+                    ),
                     _vm._v(" "),
-                    _c("th", [_vm._v("Tiempo")]),
-                    _vm._v(" "),
-                    _c("th", [_c("center", [_vm._v("Agregar")])], 1)
-                  ])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.arrayVideo.videos, function(videos) {
-                    return _c("tr", { key: videos.id }, [
-                      _c("td", {
-                        domProps: { textContent: _vm._s(videos.nombre_video) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(videos.lenght) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c(
-                          "button",
+                    _c("div", { staticClass: "col-8" }, [
+                      _c("input", {
+                        directives: [
                           {
-                            staticClass:
-                              "btn btn-success btn-sm form-control btnagregar",
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.nombre_playlist,
+                            expression: "nombre_playlist"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          placeholder: "Lista de Reproducción",
+                          id: "example-text-input"
+                        },
+                        domProps: { value: _vm.nombre_playlist },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.nombre_playlist = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-4 col-form-label",
+                        attrs: { for: "example-text-input" }
+                      },
+                      [_vm._v("Usuario")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-8" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.id_usuario,
+                                expression: "id_usuario"
+                              }
+                            ],
+                            staticClass: "form-control",
                             on: {
-                              click: function($event) {
-                                return _vm.agregarDetalleVideo(videos)
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.id_usuario = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
                               }
                             }
                           },
-                          [_c("i", { staticClass: "ti-plus" })]
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "0", disabled: "" } },
+                              [_vm._v("Seleccione")]
+                            ),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayUsers, function(usuarios) {
+                              return _c("option", {
+                                key: usuarios.id,
+                                domProps: {
+                                  value: usuarios.id,
+                                  textContent: _vm._s(usuarios.nombre_usuario)
+                                }
+                              })
+                            })
+                          ],
+                          2
                         )
                       ])
                     ])
-                  }),
-                  0
-                )
-              ])
-            ]
-          )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-4 col-form-label",
+                        attrs: { for: "example-text-input" }
+                      },
+                      [_vm._v("Canal")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-8" }, [
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.id_canal,
+                              expression: "id_canal"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.id_canal = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            }
+                          }
+                        },
+                        [
+                          _c(
+                            "option",
+                            { attrs: { value: "0", disabled: "" } },
+                            [_vm._v("Seleccione")]
+                          ),
+                          _vm._v(" "),
+                          _vm._l(_vm.arrayCanales, function(canales) {
+                            return _c("option", {
+                              key: canales.id,
+                              domProps: {
+                                value: canales.id,
+                                textContent: _vm._s(canales.nombre_canal)
+                              }
+                            })
+                          })
+                        ],
+                        2
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-4 col-form-label",
+                        attrs: { for: "example-time-input" }
+                      },
+                      [_vm._v("Hora Inicio")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-8" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.hora_inicio,
+                            expression: "hora_inicio"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "time",
+                          step: "1",
+                          value: "13:45:00",
+                          id: "example-time-input"
+                        },
+                        domProps: { value: _vm.hora_inicio },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.hora_inicio = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-4 col-form-label",
+                        attrs: { for: "example-date-input" }
+                      },
+                      [_vm._v("Emisión")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-8" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.fecha_emision,
+                            expression: "fecha_emision"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "date",
+                          value: "2011-08-19",
+                          id: "example-date-input"
+                        },
+                        domProps: { value: _vm.fecha_emision },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.fecha_emision = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _vm._m(1)
+                ])
+              ]),
+              _vm._v(" "),
+              _vm._m(2)
+            ])
+          ])
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-body" }, [
-          _c("div", { staticClass: "table-striped" }, [
-            _c(
-              "table",
-              { staticClass: "table table-sm m-10 table-striped" },
-              [
-                _c("thead", [
-                  _c("tr", [
-                    _c("th", [_vm._v("ID")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Hora de Inicio")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Hora Finaliza")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Nombre Video")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v("Duración")]),
-                    _vm._v(" "),
-                    _c("th", [_c("center", [_vm._v("Borrar")])], 1)
-                  ])
-                ]),
-                _vm._v(" "),
+      _vm.showModal
+        ? _c(
+            "div",
+            [
+              _c("transition", { attrs: { name: "fade1" } }, [
                 _c(
-                  "draggable",
-                  _vm._b(
-                    {
-                      attrs: { tag: "tbody" },
-                      on: {
-                        start: function($event) {
-                          _vm.drag = true
-                        },
-                        end: function($event) {
-                          _vm.drag = false
-                        }
-                      },
-                      model: {
-                        value: _vm.arrayDetallePlaylist,
-                        callback: function($$v) {
-                          _vm.arrayDetallePlaylist = $$v
-                        },
-                        expression: "arrayDetallePlaylist"
-                      }
-                    },
-                    "draggable",
-                    _vm.dragOptions,
-                    false
-                  ),
-                  _vm._l(_vm.itemsWithSubTotal, function(videoDetalle, index) {
-                    return _c("tr", { key: index }, [
-                      _c("td", { attrs: { scope: "row" } }, [
-                        _vm._v(_vm._s(videoDetalle.item1.id_video))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm.parseToHour(videoDetalle.subinit)))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm.parseToHour(videoDetalle.subtotal)))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(videoDetalle.item1.nombre_video))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(
-                          _vm._s(
-                            _vm.parseToHour(videoDetalle.item1.testduration)
-                          )
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "td",
-                        [
-                          _c("center", [
+                  "div",
+                  {
+                    staticClass:
+                      "modal fade1-enter-active bs-example-modal-center show",
+                    staticStyle: { display: "block", "padding-right": "17px" },
+                    attrs: {
+                      tabindex: "-1",
+                      role: "dialog",
+                      "aria-labelledby": "mySmallModalLabel",
+                      "aria-modal": "true"
+                    }
+                  },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "modal-dialog modal-dialog-centered" },
+                      [
+                        _c("div", { staticClass: "modal-content" }, [
+                          _c("div", { staticClass: "modal-header" }, [
+                            _c("h5", { staticClass: "modal-title mt-0" }, [
+                              _vm._v("Agregar Evento Live")
+                            ]),
+                            _vm._v(" "),
                             _c(
                               "button",
                               {
-                                staticClass:
-                                  "btn btn-danger waves-effect waves-light mx-auto",
-                                attrs: { type: "submit" },
+                                staticClass: "close",
+                                attrs: {
+                                  type: "button",
+                                  "data-dismiss": "modal",
+                                  "aria-hidden": "true"
+                                },
                                 on: {
                                   click: function($event) {
-                                    return _vm.eliminarDetalleVideo(index)
+                                    _vm.showModal = false
                                   }
                                 }
                               },
-                              [_c("i", { staticClass: "ti-close" })]
+                              [_vm._v("×")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "modal-body" }, [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "col-form-label",
+                                attrs: { for: "example-time-input" }
+                              },
+                              [_vm._v("Nombre live")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.nombre_live,
+                                  expression: "nombre_live"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                type: "text",
+                                step: "1",
+                                value: "13:45:00"
+                              },
+                              domProps: { value: _vm.nombre_live },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.nombre_live = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              {
+                                staticClass: "col-form-label",
+                                attrs: { for: "example-time-input" }
+                              },
+                              [_vm._v("Duración live")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.duration_live,
+                                  expression: "duration_live"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "time", step: "1" },
+                              domProps: { value: _vm.duration_live },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.duration_live = $event.target.value
+                                }
+                              }
+                            }),
+                            _c("br"),
+                            _c("br"),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.agregarLiveVideo()
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", {
+                                  staticClass: "ion ion-md-add-circle"
+                                }),
+                                _vm._v(" Agregar\r\n                  ")
+                              ]
                             )
                           ])
-                        ],
-                        1
-                      )
-                    ])
-                  }),
-                  0
-                ),
-                _vm._v(" "),
-                _c("tfoot", [
-                  _c("tr", [
-                    _c("td"),
-                    _vm._v(" "),
-                    _c("td"),
-                    _vm._v(" "),
-                    _c("td"),
-                    _vm._v(" "),
-                    _c("td"),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c("i", { staticClass: "ion ion-md-clock" }),
-                      _vm._v(
-                        "\n                    " +
-                          _vm._s(
-                            (_vm.totalParcial = _vm.parseToHour(_vm.total()))
-                          ) +
-                          "\n                  "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td")
-                  ])
-                ])
-              ],
-              1
-            )
-          ]),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary waves-effect waves-light mr-1",
-              attrs: { type: "submit" },
-              on: {
-                click: function($event) {
-                  return _vm.registrarPlaylist()
+                        ])
+                      ]
+                    )
+                  ]
+                )
+              ])
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-lg-4" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    _vm.showModal = true
+                  }
                 }
-              }
-            },
-            [_c("i", { staticClass: "ti-save" }), _vm._v(" Guardar Lista")]
-          ),
-          _vm._v(" "),
-          _vm._m(2)
+              },
+              [
+                _c("i", { staticClass: "ion ion-md-add-circle" }),
+                _vm._v(" Live\r\n            ")
+              ]
+            ),
+            _vm._v(" "),
+            _vm._m(3),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("label", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.busqueda,
+                    expression: "busqueda"
+                  }
+                ],
+                staticClass: "form-control form-control-sm",
+                attrs: {
+                  type: "videos",
+                  placeholder: "Buscar Vídeos",
+                  "aria-controls": "DataTables_Table_0"
+                },
+                domProps: { value: _vm.busqueda },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.busqueda = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "table-wrapper-scroll-y my-custom-scrollbar" },
+              [
+                _c("table", { staticClass: "table table-sm m-0" }, [
+                  _c("thead", [
+                    _c("tr", [
+                      _c("th", [_vm._v("Nombre Video")]),
+                      _vm._v(" "),
+                      _c("th", [_vm._v("Tiempo")]),
+                      _vm._v(" "),
+                      _c("th", [_c("center", [_vm._v("Agregar")])], 1)
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "tbody",
+                    _vm._l(_vm.buscarPorTitulo, function(videos) {
+                      return _c("tr", { key: videos.id }, [
+                        _c("td", {
+                          domProps: { textContent: _vm._s(videos.nombre_video) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(_vm.parseToHour(videos.lenght))
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(_vm.convertirBytes(videos.size))
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c(
+                            "button",
+                            {
+                              staticClass:
+                                "btn btn-success btn-sm form-control btnagregar",
+                              on: {
+                                click: function($event) {
+                                  return _vm.agregarDetalleVideo(videos)
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "ti-plus" })]
+                          )
+                        ])
+                      ])
+                    }),
+                    0
+                  )
+                ])
+              ]
+            )
+          ])
         ])
       ]),
       _vm._v(" "),
-      _vm._m(3)
+      _c("div", { staticClass: "col-lg-8" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "table-striped" }, [
+              _c(
+                "table",
+                { staticClass: "table table-sm m-10 table-striped" },
+                [
+                  _c("thead", [
+                    _c("tr", [
+                      _c("th", [_vm._v("Entrada")]),
+                      _vm._v(" "),
+                      _c("th", [_vm._v("Salida")]),
+                      _vm._v(" "),
+                      _c("th", [_vm._v("Nombre Video")]),
+                      _vm._v(" "),
+                      _c("th", [_vm._v("Duración")]),
+                      _vm._v(" "),
+                      _c("th", [_c("center", [_vm._v("Eliminar")])], 1)
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "draggable",
+                    _vm._b(
+                      {
+                        attrs: { tag: "tbody" },
+                        on: {
+                          start: function($event) {
+                            _vm.drag = true
+                          },
+                          end: function($event) {
+                            _vm.drag = false
+                          }
+                        },
+                        model: {
+                          value: _vm.arrayDetallePlaylist,
+                          callback: function($$v) {
+                            _vm.arrayDetallePlaylist = $$v
+                          },
+                          expression: "arrayDetallePlaylist"
+                        }
+                      },
+                      "draggable",
+                      _vm.dragOptions,
+                      false
+                    ),
+                    _vm._l(_vm.itemsWithSubTotal, function(
+                      videoDetalle,
+                      index
+                    ) {
+                      return _c(
+                        "tr",
+                        {
+                          key: index,
+                          class: [
+                            videoDetalle.item1.live == "live"
+                              ? "bg-secondary"
+                              : ""
+                          ]
+                        },
+                        [
+                          _c("td", [
+                            _vm._v(
+                              _vm._s(_vm.parseToHour(videoDetalle.subinit))
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              _vm._s(_vm.parseToHour(videoDetalle.subtotal))
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(_vm._s(videoDetalle.item1.nombre_video))
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              _vm._s(
+                                _vm.parseToHour(videoDetalle.item1.testduration)
+                              )
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "td",
+                            [
+                              _c("center", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-danger waves-effect waves-light mx-auto",
+                                    attrs: { type: "submit" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.eliminarDetalleVideo(index)
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "ti-close" })]
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  ),
+                  _vm._v(" "),
+                  _c("tfoot", [
+                    _c("tr", [
+                      _c("td"),
+                      _vm._v(" "),
+                      _c("td"),
+                      _vm._v(" "),
+                      _c("td"),
+                      _vm._v(" "),
+                      _c("td"),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("i", { staticClass: "ion ion-md-clock" }),
+                        _vm._v(
+                          "\r\n                    " +
+                            _vm._s(
+                              (_vm.totalParcial = _vm.parseToHour(_vm.total()))
+                            ) +
+                            "\r\n                  "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td")
+                    ])
+                  ])
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-primary waves-effect waves-light mr-1",
+                attrs: { type: "submit" },
+                on: {
+                  click: function($event) {
+                    return _vm.registrarPlaylist()
+                  }
+                }
+              },
+              [_c("i", { staticClass: "ti-save" }), _vm._v(" Guardar Lista")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-warning waves-effect waves-light mr-1",
+                attrs: { type: "submit" },
+                on: {
+                  click: function($event) {
+                    return _vm.onPreview()
+                  }
+                }
+              },
+              [
+                _c("i", { staticClass: "ti-control-play" }),
+                _vm._v(" Preview\r\n          ")
+              ]
+            )
+          ])
+        ])
+      ])
     ])
   ])
 }
@@ -75909,7 +78539,29 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row col-sm-12" }, [
+    return _c("div", { staticClass: "row align-items-center" }, [
+      _c("div", { staticClass: "col-sm-7 bread" }, [
+        _c("h4", { staticClass: "page-title" }, [_vm._v("Crear Playlist")]),
+        _vm._v(" "),
+        _c("ol", { staticClass: "breadcrumb" }, [
+          _c("li", { staticClass: "breadcrumb-item" }, [
+            _c("a", { attrs: { href: "javascript:void(0);" } }, [
+              _vm._v("Dashboard")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("li", { staticClass: "breadcrumb-item active" }, [
+            _vm._v("Crear Playlist")
+          ])
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group row " }, [
       _c(
         "label",
         { staticClass: "col-form-label", attrs: { for: "example-time-input" } },
@@ -75945,90 +78597,70 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "btn-group m-b-15",
-        attrs: { role: "group", "aria-label": "Basic example" }
-      },
-      [
-        _c(
-          "button",
-          { staticClass: "btn btn-success", attrs: { type: "button" } },
-          [
-            _c("i", { staticClass: "ion ion-md-add-circle" }),
-            _vm._v(" Agregar Live\n            ")
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary dropdown-toggle",
-            attrs: { type: "submit" }
-          },
-          [_vm._v("Categorias")]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "dataTables_filter m-t-10",
-            attrs: { id: "DataTables_Table_0_filter" }
-          },
-          [
-            _c("label", [
-              _c("input", {
-                staticClass: "form-control form-control-sm",
-                attrs: {
-                  type: "videos",
-                  placeholder: "Buscar Vídeos",
-                  "aria-controls": "DataTables_Table_0"
-                }
-              })
-            ])
-          ]
-        )
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "btn btn-dark waves-effect waves-light mr-1",
-        attrs: { type: "submit" }
-      },
-      [
-        _c("i", { staticClass: "ti-control-play" }),
-        _vm._v(" Preview\n          ")
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "card-body" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Código Embed Iframe")]),
-          _vm._v(" "),
-          _c("div", [
-            _c(
-              "textarea",
-              {
-                staticClass: "form-control",
-                attrs: { required: "", rows: "3" }
-              },
-              [_vm._v("<iframe></iframe>")]
-            )
-          ])
-        ])
+    return _c("div", { staticClass: "col-lg-4" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { attrs: { id: "gzplayer" } })
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "btn-group m-b-10" }, [
+      _c(
+        "button",
+        { staticClass: "btn btn-primary", attrs: { type: "button" } },
+        [_vm._v("Primary")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary dropdown-toggle dropdown-toggle-split",
+          attrs: {
+            type: "button",
+            "data-toggle": "dropdown",
+            "aria-haspopup": "true",
+            "aria-expanded": "false"
+          }
+        },
+        [_c("span", { staticClass: "sr-only" }, [_vm._v("Toggle Dropdown")])]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "dropdown-menu",
+          staticStyle: {
+            position: "absolute",
+            "will-change": "transform",
+            top: "0px",
+            left: "0px",
+            transform: "translate3d(73px, 35px, 0px)"
+          },
+          attrs: { "x-placement": "bottom-start" }
+        },
+        [
+          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
+            _vm._v("Action")
+          ]),
+          _vm._v(" "),
+          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
+            _vm._v("Another action")
+          ]),
+          _vm._v(" "),
+          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
+            _vm._v("Something else here")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "dropdown-divider" }),
+          _vm._v(" "),
+          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
+            _vm._v("Separated link")
+          ])
+        ]
+      )
     ])
   }
 ]
@@ -76347,30 +78979,9 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "col-sm-8" }, [
                 _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.hora_inicio,
-                      expression: "hora_inicio"
-                    }
-                  ],
                   staticClass: "form-control",
-                  attrs: {
-                    type: "time",
-                    step: "1",
-                    value: "13:45:00",
-                    id: "example-time-input"
-                  },
-                  domProps: { value: _vm.hora_inicio },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.hora_inicio = $event.target.value
-                    }
-                  }
+                  attrs: { type: "time", step: "1", id: "example-time-input" },
+                  domProps: { value: _vm.hora_inicio }
                 })
               ])
             ]),
@@ -80404,6 +83015,73 @@ var VueSweetalert2 = (function () {
 }());
 /* harmony default export */ __webpack_exports__["default"] = (VueSweetalert2);
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vue-uuid/dist/vue-uuid.es.js":
+/*!***************************************************!*\
+  !*** ./node_modules/vue-uuid/dist/vue-uuid.es.js ***!
+  \***************************************************/
+/*! exports provided: default, uuid */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "uuid", function() { return uuid; });
+/* harmony import */ var uuid_v1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! uuid/v1 */ "./node_modules/uuid/v1.js");
+/* harmony import */ var uuid_v1__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(uuid_v1__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! uuid/v4 */ "./node_modules/uuid/v4.js");
+/* harmony import */ var uuid_v4__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(uuid_v4__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var uuid_v5__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! uuid/v5 */ "./node_modules/uuid/v5.js");
+/* harmony import */ var uuid_v5__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(uuid_v5__WEBPACK_IMPORTED_MODULE_2__);
+/*!
+ * vue-uuid v1.1.1
+ * (c) 2017-present Vitor Luiz Cavalcanti
+ * Released under the MIT License.
+ */
+
+
+
+
+/**
+ * @typedef {{ v1: typeof v1, v4: typeof v4, v5: typeof v5 }} UUID
+ */
+
+/**
+ * An object with uuid's v1, v4 and v5 functions.
+ * @type {UUI}
+ */
+
+var uuid = {
+  v1: uuid_v1__WEBPACK_IMPORTED_MODULE_0___default.a,
+  v4: uuid_v4__WEBPACK_IMPORTED_MODULE_1___default.a,
+  v5: uuid_v5__WEBPACK_IMPORTED_MODULE_2___default.a
+};
+/**
+ * Installs UUID on Vue instance. It creates a property on Vue instance to
+ * expose an object with uuid's v1, v4 and v5 functions.
+ * @example ```js
+ * import Vue from 'vue';
+ * import VueUUID from 'vue-uuid';
+ *
+ * Vue.use(VueUUID);
+ *
+ * new Vue({
+ *   mounted () {
+ *     console.log(this.$uuid.v1());
+ *   }
+ * });
+ * ```
+ * @param {import('vue').default} Vue Vue constructor.
+ */
+
+function install(Vue) {
+  Vue.prototype.$uuid = uuid;
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (install);
+
+
 
 /***/ }),
 
@@ -95949,7 +98627,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CrearReproduccionComponent_vue_vue_type_template_id_61cd2084___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CrearReproduccionComponent.vue?vue&type=template&id=61cd2084& */ "./resources/js/components/CrearReproduccionComponent.vue?vue&type=template&id=61cd2084&");
 /* harmony import */ var _CrearReproduccionComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CrearReproduccionComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/CrearReproduccionComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _CrearReproduccionComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -95957,7 +98637,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _CrearReproduccionComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _CrearReproduccionComponent_vue_vue_type_template_id_61cd2084___WEBPACK_IMPORTED_MODULE_0__["render"],
   _CrearReproduccionComponent_vue_vue_type_template_id_61cd2084___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -95986,6 +98666,22 @@ component.options.__file = "resources/js/components/CrearReproduccionComponent.v
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearReproduccionComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CrearReproduccionComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CrearReproduccionComponent.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearReproduccionComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearReproduccionComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CrearReproduccionComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearReproduccionComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearReproduccionComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearReproduccionComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearReproduccionComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CrearReproduccionComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 

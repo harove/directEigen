@@ -1,5 +1,8 @@
 require('./bootstrap');
 
+// Vue.prototype.$axios = axios
+
+// window.axios = require('axios');
 
 window.Vue = require('vue');
 

@@ -25,6 +25,12 @@
                             </li>
 
                             <li>
+                                <router-link to="/video/subirS3" class="waves-effect"><i class="ti-cloud-up "></i><span> Subir Vídeos </span></router-link>
+                            </li>
+    
+
+
+                            <li>
                                 <a href="javascript:void(0);" class="waves-effect"><i class="ti-layout-tab"></i><span class="badge badge-danger badge-pill float-right">2</span><span> Biblioteca <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
                                 <ul class="submenu">
                                     <li><a href="videos">Vídeos</a></li>

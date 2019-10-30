@@ -18,6 +18,8 @@ Route::get('/', function () {
   Route::get('/canales/selectCanales', 'CanalController@selectCanales');
  //Videos
   Route::post('/uploadFiles','VideoController@uploadFiles')->name('upload-files');
+  Route::post('/uploadFilesS3','VideoController@uploadFilesS3')->name('upload-filesS3');
+  
   //route::get('/videos','VideoController@index')->name('videos');
   route::get('/videos/listarVideos','VideoController@index')->name('videos');
   route::post('/videos/registrar','VideoController@store')->name('videos/registrar');

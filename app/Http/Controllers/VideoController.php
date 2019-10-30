@@ -58,7 +58,6 @@ class VideoController extends Controller
     //     return $arg;
     // }
 
-
     public function uploadFiles(Request $request){
     
         //return 'uploadFiles';
@@ -266,14 +265,42 @@ class VideoController extends Controller
         
 
            // }  // check is chunk
-
-
-    
     }
+
+    public function uploadFilesS3(Request $request){
     
+//el nombre del bucket de Amazon al que quieres subir tus ficheros
+$bucket = 'mrvision22';
+//tiempo en el que va a expirar
+$expires = time() + 10000;
+//Este fichero lo podrá leer cualquiera (estos permisos se pueden modificar)
+$amzHeaders= "x-amz-acl:public-read";
+//El nombre del fichero que vamos a subir
+$filename = $_GET["filename"];
+$mimeType = "";
+//esta clave la tenemos que obtener de Amazon
+$amazonSecretKey = "xxxx";
+//Así como esta... es como la clave pública en una comunicación cifrada con certificado
+$AWSAccessKeyId = "xxxxx";
+
+//Se compone la cadena de la petición PUT al REST API de S3
+$stringToSign = "PUT\n\n{$mimeType}\n{$expires}\n{$amzHeaders}\n/{$bucket}/$filename";
+
+//Y se firma
+$hash = base64_encode(hash_hmac('sha1', $stringToSign, $amazonSecretKey, true));
+$sig = urlencode($hash);
+
+$url = urlencode(
+    "https://{$bucket}.s3.amazonaws.com/{$filename}?AWSAccessKeyId={$AWSAccessKeyId}&Expires={$expires}&Signature={$sig}"
+);
+echo $url;
 
 
 
+
+
+
+  }
 
 
 

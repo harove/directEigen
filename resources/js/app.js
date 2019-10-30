@@ -35,6 +35,15 @@ let router = new VueRouter({
             component: require('./components/SubirVideoComponent').default
         },
         {
+            path:'/video/subirS3',
+            name:'playlist_subirS3',
+            component: require('./components/SubirVideoComponentS3').default
+        },
+
+
+
+
+        {
             path:'/canal/crear',
             name:'canal_crear',
             component: require('./components/CrearCanalComponent').default

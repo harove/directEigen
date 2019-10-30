@@ -27,7 +27,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Nombre del Canal</label>
-                                                                <input type="text" :input="nombrarCanal" class="form-control" required placeholder="Ingresar nombre del canal"/>
+                                                                <input type="text" @input="nombrarCanal" class="form-control" required placeholder="Ingresar nombre del canal"/>
                                                             </div>
 
                                             
@@ -68,7 +68,7 @@
                                                             
                                                              <div class="form-group">
                                                                 <label>Logo Link <i>(Formatos .jpg .png )</i></label>
-                                                                <input class="form-control" type="url" value="https://ejemplo.cl" id="example-url-input">
+                                                                <input class="form-control" type="url"  @input="logolink=$event.target.value" id="example-url-input">
                                                             </div>
                                                         </div>
                                             
@@ -118,8 +118,9 @@ export default {
             tamaño_player: 0,
             imagen_canal: '',
             fondo_canal: '',
-            counter: 0
-
+            counter: 0,
+            position: '',
+            logolink: ''
         }
     },
     methods: {
@@ -131,7 +132,7 @@ export default {
         },
        
         registrarCanal(data) {
-            axios.post("/canales/registrar", {
+            axios.post("/canales", {
                 imagen_canal    : this.imagen_canal,
                 nombre_canal    : this.nombre_canal,
                 tamaño_player   : this.tamaño_player,
@@ -177,6 +178,7 @@ export default {
 
              changePositionVue(position) {
                     
+                    this.position = position;
                     jwplayer("gzplayer").setup({
                         file: "/uploads/video_1_2M.mp4",
                         logo: {
@@ -189,10 +191,6 @@ export default {
                     .load();
                 
                 },
-
-
-
-
     }
 
 }
